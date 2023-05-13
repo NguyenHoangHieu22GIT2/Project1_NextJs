@@ -22,7 +22,7 @@ export function TextArea({ input, label }: props) {
         }}
         onBlur={input.changeBlur}
         value={input.value}
-        className={`bg-transparent ${input.className} h-auto  w-full border-b-2 outline-none peer border-primary ${invalidClassName}`}
+        className={`bg-transparent ${input.className} h-fit  w-full border-b-2 outline-none peer border-primary ${invalidClassName}`}
       ></textarea>
       <label
         className={`absolute ${labelclassNameInvalid} -z-10 left-0 -top-2  transition font-bold text-attention origin-top-left

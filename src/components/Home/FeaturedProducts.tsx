@@ -7,6 +7,7 @@ import user1 from "../../assets/user1.jpg";
 import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import { useAppSelector } from "@/store";
 import { Product as productType } from "@/types/Product";
+import { LoadingSpinner } from "../UI/Loading";
 
 const QUERY_ALL_PRODUCTS = gql`
   query getProducts($input: ProductFindOptions!) {
@@ -43,6 +44,7 @@ export function FeaturedProducts(props: PropsWithChildren) {
   const allProductsElements = products?.map((product, index) => (
     <Product
       key={product._id}
+      _id={product._id}
       title={product.title}
       price={product.price}
       description={product.description}
@@ -58,7 +60,7 @@ export function FeaturedProducts(props: PropsWithChildren) {
       </h1>
       <SystemUI>
         <div className=" col-span-12 my-16 grid gap-3 xl:justify-center grid-cols-12">
-          {loading ? "The Product is Loading..." : allProductsElements}
+          {loading ? <LoadingSpinner /> : allProductsElements}
         </div>
       </SystemUI>
       <div className="text-center">

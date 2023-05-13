@@ -5,6 +5,7 @@ import product1 from "../../assets/product1.jpg";
 import user1 from "../../assets/user1.jpg";
 import { gql, useQuery } from "@apollo/client";
 import { Product as ProductType } from "@/types/Product";
+import { LoadingSpinner } from "../UI/Loading";
 
 const QUERY_ALL_PRODUCTS = gql`
   query getProducts($input: ProductFindOptions!) {
@@ -21,11 +22,19 @@ const QUERY_ALL_PRODUCTS = gql`
 type props = {
   valueToFind: string;
   pageNumber: number;
+  limit: number;
+  skip: number;
 };
 export function Products(props: props) {
   const [products, setProducts] = useState<ProductType[]>([]);
   const { data, loading, error } = useQuery(QUERY_ALL_PRODUCTS, {
-    variables: { input: { limit: 2, skip: (props.pageNumber - 1) * 2 } },
+    variables: {
+      input: {
+        limit: props.limit,
+        skip: (props.pageNumber - 1) * props.skip,
+        words: props.valueToFind,
+      },
+    },
   });
   useEffect(() => {
     if (data) setProducts(data.products);
@@ -36,7 +45,7 @@ export function Products(props: props) {
       <h1 className="text-center text-heading font-bold text-white">Error</h1>
     );
   }
-  if (products) {
+  if (products.length > 0) {
     productElements = products.map((product) => {
       if (
         props.valueToFind.length > 0 &&
@@ -45,6 +54,7 @@ export function Products(props: props) {
         return (
           <Product
             key={product._id}
+            _id={product._id}
             title={product.title}
             price={product.price}
             description={product.description}
@@ -56,6 +66,7 @@ export function Products(props: props) {
         return (
           <Product
             key={product._id}
+            _id={product._id}
             title={product.title}
             price={product.price}
             description={product.description}
@@ -64,20 +75,24 @@ export function Products(props: props) {
           />
         );
     });
+  } else if (products.length <= 0) {
+    productElements = (
+      <h1 className="col-span-12 text-white text-4xl text-center">
+        No Product Found...
+      </h1>
+    );
   }
   return (
     <section className="py-5 xl:py-12">
-      {loading || !data ? (
-        <h1 className="text-center text-heading font-bold text-white">
-          Loading...
-        </h1>
-      ) : (
-        <SystemUI>
+      <SystemUI>
+        {loading || !data ? (
+          <LoadingSpinner />
+        ) : (
           <div className=" col-span-12  grid gap-3  grid-cols-12">
             {productElements}
           </div>
-        </SystemUI>
-      )}
+        )}
+      </SystemUI>
     </section>
   );
 }

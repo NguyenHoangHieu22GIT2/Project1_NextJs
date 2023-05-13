@@ -12,6 +12,7 @@ import store, { useAppDispatch } from "@/store";
 import { useEffect } from "react";
 import { authActions } from "@/store/auth";
 import Card from "@/components/UI/Card";
+import { LoadingSpinner } from "@/components/UI/Loading";
 export default function App({ Component, pageProps }: AppProps) {
   const client = new ApolloClient({
     uri: process.env.NEXT_PUBLIC_SERVER_URI,

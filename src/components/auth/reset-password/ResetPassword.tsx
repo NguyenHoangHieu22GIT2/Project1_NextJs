@@ -77,22 +77,8 @@ export function ResetPassword() {
             action="post"
             className="xl:col-span-6 col-span-12 [&>*]:mb-10"
           >
-            <Input
-              label="Password"
-              type="password"
-              changeBlur={passwordInput.changeBlur}
-              changeValue={passwordInput.changeValue}
-              value={passwordInput.value}
-              invalid={passwordInput.invalid}
-            />
-            <Input
-              label="Token"
-              type="text"
-              changeBlur={tokenInput.changeBlur}
-              changeValue={tokenInput.changeValue}
-              value={tokenInput.value}
-              invalid={tokenInput.invalid}
-            />
+            <Input label="Password" type="password" input={passwordInput} />
+            <Input label="Token" type="text" input={tokenInput} />
             <Button>Reset Password</Button>
           </form>
         </div>
