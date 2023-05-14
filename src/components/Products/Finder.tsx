@@ -28,7 +28,7 @@ export function Finder(props: props) {
         <form onSubmit={submit} className="col-span-12 grid grid-cols-12 py-5">
           <input
             onChange={(e) => setValue(e.target.value)}
-            className="col-span-10 px-3 py-5 text-2xl outline-none rounded-bl-lg rounded-tl-lg"
+            className="col-span-10 bg-gray-300 px-3 py-5 text-2xl outline-none rounded-bl-lg rounded-tl-lg"
             placeholder="Find Products..."
           />
           <button className="bg-slate-900 col-span-2 flex justify-center items-center rounded-br-lg rounded-tr-lg ">

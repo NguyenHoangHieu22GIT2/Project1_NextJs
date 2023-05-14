@@ -11,7 +11,7 @@ export function Button(props: props) {
     <button
       onClick={props.onClick}
       className={`
-    bg-primary  ${
+    bg-primary  shadow-2xl ${
       props.classNames ? props.classNames : ""
     } text-black   capitalize font-bold px-12 rounded-lg py-2 text-attention  transition  
     `}

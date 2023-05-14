@@ -16,7 +16,7 @@ export function Input({ input, label, type }: props) {
 
   const labelclassNameInvalid = input.invalid ? "text-red-900" : "";
   return (
-    <div className="relative col-span-12 text-white">
+    <div className="relative col-span-12 text-gray-700">
       <input
         onChange={(e) => {
           input.changeValue(e.target.value.toString());

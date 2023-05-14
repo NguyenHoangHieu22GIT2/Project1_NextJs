@@ -54,8 +54,8 @@ export function FeaturedProducts(props: PropsWithChildren) {
   ));
 
   return (
-    <section id="products">
-      <h1 className="text-center mx-auto w-fit text-4xl text-white border-b-2 border-dashed border-primary">
+    <section className="text-gray-700" id="products">
+      <h1 className="text-center mx-auto w-fit text-4xl  border-b-8 border-dashed border-primary">
         Featured Products
       </h1>
       <SystemUI>

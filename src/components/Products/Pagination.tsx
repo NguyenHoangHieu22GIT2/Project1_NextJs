@@ -18,7 +18,7 @@ export const Pagination: React.FC<props> = (props) => {
     props.pageNumber != 1 &&
     props.pageNumber - 1 != 1 && (
       <>
-        <li className="border-2 border-primary">
+        <li className="border-4 border-primary">
           <Link
             href={`/products/${props.firstPage}?${searchParam}`}
             className="inline-block px-4 hover:bg-primary transition"
@@ -30,7 +30,7 @@ export const Pagination: React.FC<props> = (props) => {
       </>
     );
   let theCurrentLink = (
-    <li className="border-2 border-primary  bg-primary">
+    <li className="border-4 border-primary  bg-primary">
       <Link
         href={`/products/${props.pageNumber}?${searchParam}`}
         className="inline-block px-4 hover:bg-primary transition"
@@ -41,7 +41,7 @@ export const Pagination: React.FC<props> = (props) => {
   );
 
   let nextPage = props.nextPage > 0 && (
-    <li className="border-2 border-primary  ">
+    <li className="border-4 border-primary  ">
       <Link
         href={`/products/${props.nextPage}?${searchParam}`}
         className="inline-block px-4 hover:bg-primary transition"
@@ -51,7 +51,7 @@ export const Pagination: React.FC<props> = (props) => {
     </li>
   );
   let previousPage = props.previousPage > 0 && (
-    <li className="border-2 border-primary  ">
+    <li className="border-4 border-primary  ">
       <Link
         href={`/products/${props.previousPage}?${searchParam}`}
         className="inline-block px-4 hover:bg-primary transition"
@@ -63,7 +63,7 @@ export const Pagination: React.FC<props> = (props) => {
   let lastPage = props.lastPage > 0 && (
     <>
       ...
-      <li className="border-2 border-primary  ">
+      <li className="border-4 border-primary  ">
         <Link
           href={`/products/${props.lastPage}?${props.valueToFind}`}
           className="inline-block px-4 hover:bg-primary transition"
@@ -75,7 +75,7 @@ export const Pagination: React.FC<props> = (props) => {
   );
 
   let nextPageButton = props.nextPage > 0 && (
-    <li className="border-2 xl:block hidden border-primary  ">
+    <li className="border-4 xl:block hidden border-primary  ">
       <Link
         href={`/products/${props.nextPage}`}
         className="inline-block px-4 hover:bg-primary transition"
@@ -85,7 +85,7 @@ export const Pagination: React.FC<props> = (props) => {
     </li>
   );
   let previousPageButton = props.previousPage > 0 && (
-    <li className="border-2 xl:block hidden border-primary  ">
+    <li className="border-4 xl:block hidden border-primary  ">
       <Link
         href={`/products/${props.previousPage}`}
         className="inline-block px-4 hover:bg-primary transition"
@@ -95,7 +95,7 @@ export const Pagination: React.FC<props> = (props) => {
     </li>
   );
   return (
-    <nav className="my-4 text-white">
+    <nav className="my-4 text-gray-700">
       <SystemUI>
         <ul className="flex justify-center col-span-12 xl:gap-5 gap-1 text-sm xl:text-2xl ">
           {previousPageButton}
@@ -110,16 +110,3 @@ export const Pagination: React.FC<props> = (props) => {
     </nav>
   );
 };
-
-{
-  /* <li className="border-2 border-primary px-4 bg-primary">
-            <Link href={`/products/${1}`}>1</Link>
-          </li>
-
-          <li className="border-2 border-primary px-4 ">
-            <Link href={`/products/${2}`}>2</Link>
-          </li>
-          <li className="border-2 border-primary px-4 hover:bg-primary/80 transition-all hover:text-primarypx-4">
-            <Link href={`/products/${3}`}>3</Link>
-          </li> */
-}

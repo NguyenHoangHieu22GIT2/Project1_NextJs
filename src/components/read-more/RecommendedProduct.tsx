@@ -52,7 +52,7 @@ export const RecommendedProducts: React.FC<props> = (props) => {
   return (
     <section className="py-5">
       <SystemUI>
-        <h1 className="col-span-12 text-white font-bold text-2xl">
+        <h1 className="col-span-12 text-gray-900 font-bold text-2xl">
           Recommended Products:
         </h1>
         {loading ? (

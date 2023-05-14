@@ -31,8 +31,8 @@ export const ReadMore: React.FC<props> = (props) => {
     pageContent = <LoadingSpinner />;
   } else if (product) {
     pageContent = (
-      <div className="col-span-12 gap-3 grid grid-cols-12">
-        <div className="w-full  h-full aspect-square relative xl:col-span-6 col-span-12">
+      <div className="col-span-12 gap-3 grid grid-cols-12 ">
+        <div className="w-full   aspect-square relative xl:col-span-6 col-span-12">
           <Image
             fill
             sizes="100vw"
@@ -41,20 +41,31 @@ export const ReadMore: React.FC<props> = (props) => {
             alt={product.title}
           />
         </div>
-        <div className="xl:col-span-6 col-span-12">
+        <div className="col-span-12 xl:col-span-6 lex flex-col justify-between">
           <div className="flex xl:block my-5 justify-between col-span-12">
             <h1 className=" font-bold text-xl xl:text-7xl">{product.title}</h1>
-            <p className=" font-semibold text-xl">${product.price}</p>
+            <p className=" font-semibold text-xl">
+              <span className="text-sm">$</span>
+              {product.price}
+            </p>
           </div>
-          <p className="col-span-12 text-white/80">{product.description}</p>
-
+          <p className="col-span-12 text-gray-700">{product.description}</p>
+          <div className="py-5">
+            <label className="block" htmlFor="quantity">
+              quantity:
+            </label>
+            <input
+              type="number"
+              className="outline-none border-2 w-full border-slate-900  px-2 py-1"
+            />
+          </div>
           <Button classNames="col-span-12">Add To Cart</Button>
         </div>
       </div>
     );
   }
   return (
-    <section className="my-5 text-white">
+    <section className="my-5 text-gray-900">
       <SystemUI>{pageContent}</SystemUI>
     </section>
   );

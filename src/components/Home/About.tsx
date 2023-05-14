@@ -5,14 +5,14 @@ import Restaurant from "../../assets/E-Commerce & Delivery-01.png";
 import ExploreIcon from "../../assets/ExploreIcon.svg";
 export function About() {
   return (
-    <section id="about">
+    <section id="about" className="text-gray-700">
       <SystemUI>
         <div className="col-span-12 xl:col-span-6 relative ">
           <BlurBall position={{ x: "bottom-20", y: "left-10" }} />
           <Image src={Restaurant} alt="Introduction" />
         </div>
-        <div className="col-span-12 xl:col-span-6 grid text-white xl:gap-4 self-center">
-          <h1 className="text-heading col-span-6 leading-none font-bold  capitalize before:content[''] before:absolute relative before:w-1 before:h-full before:top-0 before:-left-5 before:bg-subPrimary ">
+        <div className="col-span-12 xl:col-span-6 grid xl:gap-4 self-center">
+          <h1 className="text-heading col-span-6 leading-none font-bold  capitalize before:content[''] before:absolute relative before:w-3 before:h-full before:top-0 before:-left-5 before:bg-primary ">
             About Us
           </h1>
           <p className="text-paragraph col-span-6 leading-relaxed font-bold  capitalize ">

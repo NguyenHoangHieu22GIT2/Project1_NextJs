@@ -20,7 +20,7 @@ function Header() {
 
   const navbarClasses = openNav ? "translate-x-0" : "-translate-x-52";
   return (
-    <header className="text-white sticky top-0  w-full z-10 backdrop-blur-sm font-primary py-5 bg-[#8184A0]/50 ">
+    <header className="text-gray-900 sticky top-0  w-full z-10 backdrop-blur-sm font-primary py-5 bg-gray-900/60 ">
       <SystemUI>
         <h1
           className={` col-span-3 text-2xl xl:text-3xl font-bold ${outfit.className} `}
@@ -46,10 +46,10 @@ function Header() {
 
         <Popup isOpen={openNav} onClick={toggleOpenNav}>
           <nav
-            className={`fixed xl:hidden z-20 top-0 h-screen w-fit left-0 transition ${navbarClasses} bg-slate-800 px-2 py-5`}
+            className={`fixed xl:hidden  z-20 top-0 h-screen w-fit left-0 transition ${navbarClasses} bg-slate-800 px-2 py-5`}
           >
             <ul
-              className={`${montserrat.className} flex flex-col gap-5 text-slate-200 text-lg font-normal justify-between`}
+              className={`${montserrat.className} flex flex-col gap-5 text-gray-300 text-lg font-bold justify-between`}
             >
               <li className="hover:text-primary transition ">
                 <Link
@@ -106,7 +106,7 @@ function Header() {
         {/* For Computer */}
         <nav className="col-span-7 col-start-7 hidden xl:flex justify-center items-center w-full ">
           <ul
-            className={`${montserrat.className} flex gap-9  text-slate-200 text-lg font-normal justify-between`}
+            className={`${montserrat.className} flex gap-9  text-gray-900 text-lg font-bold justify-between`}
           >
             <li className="hover:text-primary transition ">
               <Link
@@ -132,7 +132,7 @@ function Header() {
               <>
                 <li className="hover:text-primary transition ">
                   <Link
-                    href="products/create-product"
+                    href="/products/create-product"
                     className={`inline-block   ${
                       route.pathname == "/create-product" &&
                       "text-primary font-bold"

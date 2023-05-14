@@ -115,8 +115,8 @@ export function CreateProduct(props: props) {
         }}
       ></NotificationCard>
       <SystemUI>
-        <div className="col-span-12 grid grid-cols-12 ">
-          <h1 className="text-center uppercase border-b-2 border-dotted border-b-blue-300 text-white text-subHeading col-span-12">
+        <div className="col-span-12 grid grid-cols-12 text-gray-800 ">
+          <h1 className="text-center uppercase border-b-2 border-dotted border-b-blue-300 font-bold text-subHeading col-span-12">
             Create Product
           </h1>
           <form className="col-span-12 mt-14 [&>*]:mb-10" onSubmit={submit}>

@@ -94,7 +94,7 @@ export const Login: React.FC<props> = (props) => {
       <Input label="Password" type="password" input={passwordInput} />
       <Link
         href="auth/forgot-password"
-        className=" w-fit px-2 py-1  text-blue-200 rounded-lg"
+        className=" w-fit px-2 py-1  text-blue-800 font-bold rounded-lg"
       >
         Forgot Password?
       </Link>

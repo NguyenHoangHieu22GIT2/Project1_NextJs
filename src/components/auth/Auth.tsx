@@ -96,7 +96,7 @@ export function Auth() {
           </form>
         )}
       </NotificationCard>
-      <div className="col-span-12 bg-neutral-400 py-5 px-2 rounded-lg grid grid-cols-12 gap-2">
+      <div className="col-span-12 bg-slate-400 py-5 px-2 rounded-lg grid grid-cols-12 gap-2">
         <button
           onClick={chooseLogin}
           className={`${
@@ -115,11 +115,11 @@ export function Auth() {
         </button>
       </div>
       <div className="col-span-12 pt-5 grid grid-cols-12">
-        <div className="xl:col-span-6 text-white  col-span-12  ">
+        <div className="xl:col-span-6 text-gray-800 font-bold col-span-12  ">
           {isLogin ? (
             <>
               <h1 className="text-heading ">Rules</h1>
-              <ol className="list-decimal">
+              <ol className="list-decimal ">
                 <li>
                   <p>You have to register first to login!</p>
                 </li>

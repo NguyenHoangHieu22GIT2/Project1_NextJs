@@ -15,7 +15,7 @@ const QUERY_PRODUCTS_COUNT = gql`
 const ProductIndexPage: React.FC<PropsWithChildren> = (props) => {
   const router = useRouter();
   const valueToFind = (router.query.search as string) || "";
-  const LIMIT = 1;
+  const LIMIT = 30;
   const SKIP = 1;
   const { data, loading } = useQuery(QUERY_PRODUCTS_COUNT, {
     variables: {

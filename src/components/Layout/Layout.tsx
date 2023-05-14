@@ -11,7 +11,10 @@ export function Layout(props: PropsWithChildren) {
   useEffect(() => {
     if (sessionStorage.getItem("token"))
       dispatch(
-        authActions.login({ token: sessionStorage.getItem("token") || "" })
+        authActions.login({
+          token: sessionStorage.getItem("token") || "",
+          userId: sessionStorage.getItem("userId") || "",
+        })
       );
   }, []);
   return (
