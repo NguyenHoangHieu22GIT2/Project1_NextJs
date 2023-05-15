@@ -1,6 +1,6 @@
 import { Button } from "@/components/UI/Button";
 import { Input } from "@/components/UI/Input";
-import SystemUI from "@/components/UI/SystemUI";
+import { SystemUI } from "@/components/UI/SystemUI";
 import { useInput } from "@/hooks/useInput";
 import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import { FormEvent } from "react";

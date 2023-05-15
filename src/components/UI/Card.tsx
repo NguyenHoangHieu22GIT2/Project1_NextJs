@@ -16,16 +16,11 @@ function Card(props: props) {
   } else {
   }
   return (
-    <>
-      {createPortal(
-        <div
-          className={`fixed ${borderColor} shadow-2xl gap-5 flex flex-col justify-center items-center top-1/2 bg-slate-200 xl:w-5/12 w-full h-fit px-5 py-10 rounded-lg  left-1/2 -translate-x-1/2 -translate-y-1/2 z-20`}
-        >
-          {props.children}
-        </div>,
-        document.querySelector("#card")!
-      )}
-    </>
+    <div
+      className={`  ${borderColor} shadow-2xl gap-5  text-center bg-slate-200  w-full h-fit px-5 py-10 rounded-lg z-20`}
+    >
+      {props.children}
+    </div>
   );
 }
 export default dynamic(() => Promise.resolve(Card), { ssr: false });

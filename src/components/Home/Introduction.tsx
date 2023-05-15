@@ -1,12 +1,12 @@
 import { PropsWithChildren } from "react";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import Image from "next/image";
 import introductionImage from "../../assets/E-Commerce & Delivery-19.png";
 import { BlurBall } from "../UI/BlurBall";
 import { Montserrat, Outfit } from "next/font/google";
 const outfit = Outfit({ subsets: ["latin"] });
 
-function Introduction(props: PropsWithChildren) {
+export function Introduction(props: PropsWithChildren) {
   return (
     <section id="home " className="mt-5 xl:mt-0 text-black">
       <SystemUI>
@@ -36,5 +36,3 @@ function Introduction(props: PropsWithChildren) {
     </section>
   );
 }
-
-export default Introduction;

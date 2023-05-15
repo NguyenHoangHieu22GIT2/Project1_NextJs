@@ -1,4 +1,3 @@
-import SystemUI from "@/components/UI/SystemUI";
 import { Auth } from "@/components/auth/Auth";
 import { PropsWithChildren } from "react";
 

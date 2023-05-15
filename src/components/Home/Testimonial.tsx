@@ -1,5 +1,5 @@
 import Image from "next/image";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import user1 from "../../assets/user1.jpg";
 import Left from "../../assets/Left.svg";
 import Right from "../../assets/Right.svg";

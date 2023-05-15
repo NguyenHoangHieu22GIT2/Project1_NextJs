@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import Link from "next/link";
 
 type props = {

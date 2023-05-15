@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { BlurBall } from "../UI/BlurBall";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import Restaurant from "../../assets/E-Commerce & Delivery-01.png";
 import ExploreIcon from "../../assets/ExploreIcon.svg";
 export function About() {

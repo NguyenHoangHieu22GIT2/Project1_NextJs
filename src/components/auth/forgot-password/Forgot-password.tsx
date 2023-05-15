@@ -1,7 +1,7 @@
 import { Button } from "@/components/UI/Button";
 import { Input } from "@/components/UI/Input";
 import { NotificationCard } from "@/components/UI/NotificationCard";
-import SystemUI from "@/components/UI/SystemUI";
+import { SystemUI } from "@/components/UI/SystemUI";
 import { useInput } from "@/hooks/useInput";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { notificationActions } from "@/store/notification";

@@ -1,6 +1,6 @@
 import { useInput } from "@/hooks/useInput";
 import { Input } from "../UI/Input";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import { Button } from "../UI/Button";
 import { TextArea } from "../UI/Textarea";
 import { gql, useLazyQuery, useMutation } from "@apollo/client";

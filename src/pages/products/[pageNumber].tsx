@@ -3,6 +3,7 @@ import { Finder } from "@/components/Products/Finder";
 import { Pagination } from "@/components/Products/Pagination";
 import { Products } from "@/components/Products/Products";
 import { gql, useQuery } from "@apollo/client";
+import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { PropsWithChildren, useEffect, useState } from "react";
 
@@ -42,7 +43,11 @@ const ProductIndexPage: React.FC<PropsWithChildren> = (props) => {
     return <h1>Waiting</h1>;
   }
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <Finder pageNumber={pageNumber} />
       <Filter />
       <Products
@@ -63,7 +68,7 @@ const ProductIndexPage: React.FC<PropsWithChildren> = (props) => {
         nextPage={pageNumber * LIMIT < countProducts ? pageNumber + 1 : 0}
         previousPage={pageNumber * LIMIT > LIMIT ? pageNumber - 1 : 0}
       />
-    </>
+    </motion.div>
   );
 };
 

@@ -1,5 +1,5 @@
 import { PropsWithChildren, useState } from "react";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 
 const categories = ["Technology", "Clothes", "Games", "Misc"];
 
@@ -22,7 +22,6 @@ export function Filter(props: PropsWithChildren) {
   } else {
     priceText = "10 million and above";
   }
-  console.log(category);
   const radioButtonCategories = categories.map((category, index) => {
     if (index === 0) {
       return (

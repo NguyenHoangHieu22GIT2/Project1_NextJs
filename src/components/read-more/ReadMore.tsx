@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from "react";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import Image from "next/image";
 import { Button } from "../UI/Button";
 import { gql, useQuery } from "@apollo/client";

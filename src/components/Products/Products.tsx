@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from "react";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import { Product } from "../UI/Product";
 import product1 from "../../assets/product1.jpg";
 import user1 from "../../assets/user1.jpg";

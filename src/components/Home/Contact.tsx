@@ -1,6 +1,6 @@
 import { FormEvent } from "react";
 import { Input } from "../UI/Input";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import { useInput } from "@/hooks/useInput";
 import { Button } from "../UI/Button";
 export function Contact() {

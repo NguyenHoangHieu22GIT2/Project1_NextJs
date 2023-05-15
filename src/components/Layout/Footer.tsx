@@ -1,9 +1,9 @@
-import Image from 'next/image';
-import SystemUI from '../UI/SystemUI';
-import ross from '../../assets/ross.svg';
-import rulerfoods from '../../assets/rulerfoods.svg';
-import synnex from '../../assets/synnex.svg';
-import instacart from '../../assets/instacart.svg';
+import Image from "next/image";
+import { SystemUI } from "../UI/SystemUI";
+import ross from "../../assets/ross.svg";
+import rulerfoods from "../../assets/rulerfoods.svg";
+import synnex from "../../assets/synnex.svg";
+import instacart from "../../assets/instacart.svg";
 export function Footer() {
   return (
     <footer className="bg-[#252F47] py-5 w-full">
@@ -17,7 +17,9 @@ export function Footer() {
           </ul>
         </div>
         <div className="col-span-7">
-          <h1 className="text-white text-attention xl:text-heading ">Trusted By:</h1>
+          <h1 className="text-white text-attention xl:text-heading ">
+            Trusted By:
+          </h1>
           <ul className="flex xl:gap-5">
             <li>
               <Image src={ross} alt="brang1" />

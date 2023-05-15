@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import SystemUI from "./SystemUI";
+import { SystemUI } from "./SystemUI";
 import Image, { StaticImageData } from "next/image";
 import product1 from "../../assets/product1.jpg";
 import user1 from "../../assets/user1.jpg";

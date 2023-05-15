@@ -5,7 +5,7 @@ import {
   PropsWithChildren,
   useState,
 } from "react";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import Image from "next/image";
 import search from "../../assets/search-line.svg";
 import { useRef } from "react";

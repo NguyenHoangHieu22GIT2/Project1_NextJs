@@ -1,5 +1,5 @@
 import { FormEvent, PropsWithChildren, useEffect, useState } from "react";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import { Login } from "./Login";
 import { Register } from "./Register";
 import { useCheckAuth } from "@/hooks/useCheckAuth";

@@ -18,6 +18,9 @@ export default function Document() {
       </Head>
 
       <body>
+        <div id="modal"></div>
+        <div id="backdrop"></div>
+        <div id="card"></div>
         <Main />
         <NextScript />
       </body>

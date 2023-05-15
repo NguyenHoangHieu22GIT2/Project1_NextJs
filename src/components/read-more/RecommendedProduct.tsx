@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from "react";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import { gql, useQuery } from "@apollo/client";
 import { LoadingSpinner } from "../UI/Loading";
 import { Product } from "../UI/Product";

@@ -5,6 +5,8 @@ import Header from "./Header";
 import { useAppDispatch } from "@/store";
 import { authActions } from "@/store/auth";
 import { Main } from "./Main";
+import { AnimatePresence } from "framer-motion";
+import { useRouter } from "next/router";
 
 export function Layout(props: PropsWithChildren) {
   const dispatch = useAppDispatch();
@@ -20,7 +22,9 @@ export function Layout(props: PropsWithChildren) {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
+
       <Main>{props.children}</Main>
+
       <Footer />
       <GoUp />
     </div>

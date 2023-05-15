@@ -1,26 +1,57 @@
 import Link from "next/link";
-import SystemUI from "../UI/SystemUI";
+import { SystemUI } from "../UI/SystemUI";
 import { Montserrat, Outfit } from "next/font/google";
 import { useState } from "react";
 import Popup from "../UI/Popup";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/store";
+import { AnimatePresence } from "framer-motion";
 const outfit = Outfit({ subsets: ["latin"] });
 
 const montserrat = Montserrat({ subsets: ["latin"] });
-
+const links = [
+  {
+    link: "/",
+    name: "Home",
+    isAuth: false,
+  },
+  {
+    link: "/products",
+    isAuth: false,
+    name: "Products",
+  },
+  {
+    link: "/create-product",
+    isAuth: true,
+    name: "Create Products",
+  },
+  {
+    link: "/auth",
+    name: "Auth",
+    isAuth: false,
+  },
+  {
+    link: "/auth/logout",
+    name: "Logout",
+    isAuth: true,
+  },
+];
 function Header() {
   const isAuth = useAppSelector((state) => state.auth.token) ? true : false;
   const [openNav, setOpenNav] = useState<boolean>(false);
   const route = useRouter();
-
+  const auth = useAppSelector((state) => state.auth);
   function toggleOpenNav() {
     setOpenNav(!openNav);
   }
+  const navLinkElements = links.map((link) => {
+    if (auth.token) {
+      return;
+    }
+  });
 
-  const navbarClasses = openNav ? "translate-x-0" : "-translate-x-52";
   return (
-    <header className="text-gray-900 sticky top-0  w-full z-10 backdrop-blur-sm font-primary py-5 bg-gray-900/60 ">
+    <header className="text-gray-900 sticky top-0  w-full z-10 backdrop-blur-sm font-primary py-5 shadow-lg ">
       <SystemUI>
         <h1
           className={` col-span-3 text-2xl xl:text-3xl font-bold ${outfit.className} `}
@@ -43,66 +74,80 @@ function Header() {
             />
           </svg>
         </button>
-
-        <Popup isOpen={openNav} onClick={toggleOpenNav}>
-          <nav
-            className={`fixed xl:hidden  z-20 top-0 h-screen w-fit left-0 transition ${navbarClasses} bg-slate-800 px-2 py-5`}
-          >
-            <ul
-              className={`${montserrat.className} flex flex-col gap-5 text-gray-300 text-lg font-bold justify-between`}
+        <AnimatePresence mode="wait">
+          {openNav && (
+            <Popup
+              isHeader={true}
+              animation={{
+                initial: { x: -200 },
+                animate: { x: 0 },
+                exit: { x: -200 },
+                transition: { bounce: 0 },
+              }}
+              isOpen={openNav}
+              onClick={toggleOpenNav}
             >
-              <li className="hover:text-primary transition ">
-                <Link
-                  className={`inline-block   ${
-                    route.pathname == "/" && "text-primary font-bold"
-                  }`}
-                  href="/"
+              <nav
+                className={`   h-screen w-fit transition $ bg-slate-800 px-2 py-5`}
+              >
+                <ul
+                  className={`${montserrat.className} flex flex-col gap-5 text-gray-300 text-lg font-bold justify-between`}
                 >
-                  Home
-                </Link>
-              </li>
-              <li className="hover:text-primary transition ">
-                <Link
-                  className={`inline-block   ${
-                    route.pathname == "/products" && "text-primary font-bold"
-                  }`}
-                  href="/products"
-                >
-                  Products
-                </Link>
-              </li>
-              {isAuth && (
-                <>
                   <li className="hover:text-primary transition ">
                     <Link
-                      href="products/create-product"
                       className={`inline-block   ${
-                        route.pathname == "/create-product" &&
-                        "text-primary font-bold"
+                        route.pathname == "/" && "text-primary font-bold"
                       }`}
+                      href="/"
                     >
-                      Create Products
+                      Home
                     </Link>
                   </li>
-                </>
-              )}
-              <li className="hover:text-primary transition ">
-                {isAuth ? (
-                  <Link href="/auth/logout">Log out</Link>
-                ) : (
-                  <Link
-                    href="/auth"
-                    className={`inline-block   ${
-                      route.pathname == "/auth" && "text-primary font-bold"
-                    }`}
-                  >
-                    Auth
-                  </Link>
-                )}
-              </li>
-            </ul>
-          </nav>
-        </Popup>
+                  <li className="hover:text-primary transition ">
+                    <Link
+                      className={`inline-block   ${
+                        route.pathname == "/products" &&
+                        "text-primary font-bold"
+                      }`}
+                      href="/products"
+                    >
+                      Products
+                    </Link>
+                  </li>
+                  {isAuth && (
+                    <>
+                      <li className="hover:text-primary transition ">
+                        <Link
+                          href="products/create-product"
+                          className={`inline-block   ${
+                            route.pathname == "/create-product" &&
+                            "text-primary font-bold"
+                          }`}
+                        >
+                          Create Products
+                        </Link>
+                      </li>
+                    </>
+                  )}
+                  <li className="hover:text-primary transition ">
+                    {isAuth ? (
+                      <Link href="/auth/logout">Log out</Link>
+                    ) : (
+                      <Link
+                        href="/auth"
+                        className={`inline-block   ${
+                          route.pathname == "/auth" && "text-primary font-bold"
+                        }`}
+                      >
+                        Auth
+                      </Link>
+                    )}
+                  </li>
+                </ul>
+              </nav>
+            </Popup>
+          )}
+        </AnimatePresence>
         {/* For Computer */}
         <nav className="col-span-7 col-start-7 hidden xl:flex justify-center items-center w-full ">
           <ul
