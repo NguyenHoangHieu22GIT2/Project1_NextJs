@@ -60,7 +60,6 @@ export const Login: React.FC<props> = (props) => {
           props.onHaveToken(result.data.login.access_token);
           sessionStorage.setItem("token", result.data.login.access_token);
           sessionStorage.setItem("userId", result.data.login.userId);
-          console.log(result.data.login);
           dispatch(
             authActions.login({
               token: result.data.login.access_token,

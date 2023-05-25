@@ -9,39 +9,13 @@ import { useAppSelector } from "@/store";
 import { Product as productType } from "@/types/Product";
 import { LoadingSpinner } from "../UI/Loading";
 
-const QUERY_ALL_PRODUCTS = gql`
-  query getProducts($input: ProductFindOptions!) {
-    products(productFindOptions: $input) {
-      _id
-      title
-      description
-      imageUrl
-      price
-      userId
-    }
-  }
-`;
+type props = {
+  products: productType[];
+  loading: boolean;
+};
 
-export function FeaturedProducts(props: PropsWithChildren) {
-  const [fetchData, { loading, data, error }] = useLazyQuery(
-    QUERY_ALL_PRODUCTS,
-    { variables: { input: { skip: 0, limit: 3 } } }
-  );
-  const [products, setProducts] = useState<productType[]>();
-  async function fetchProducts() {
-    const result = await fetchData({});
-    if (result.data) {
-      setProducts(result.data.products);
-    }
-  }
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  if (error) {
-    return <p>We are having a bug, please wait </p>;
-  }
-  const allProductsElements = products?.map((product, index) => (
+export function FeaturedProducts({ products, loading }: props) {
+  const allProductsElements = products?.map((product) => (
     <Product
       key={product._id}
       _id={product._id}

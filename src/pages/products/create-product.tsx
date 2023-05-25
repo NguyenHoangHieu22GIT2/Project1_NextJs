@@ -1,39 +1,26 @@
-import { NotificationCard } from "@/components/UI/NotificationCard";
+import { Layout } from "@/components/Layout/Layout";
 import { CreateProduct } from "@/components/create-product/Create-Product";
-import { useAppSelector } from "@/store";
-import { gql, useMutation } from "@apollo/client";
-import { useEffect, useState } from "react";
-
-const MUTATION_CREATE_TOKEN = gql`
-  mutation createCsrfToken($input: String!) {
-    createCsrfToken(userId: $input) {
-      token
-    }
-  }
-`;
+import { useCheckAuth } from "@/hooks/useCheckAuth";
+import { useToken } from "@/hooks/useToken";
+import { GetServerSideProps } from "next";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function CreateProductPage() {
-  const auth = useAppSelector((state) => state.auth);
-  const [csrfToken, setCsrfToken] = useState<string>("");
-  const [createCsrfToken, { loading, data, error }] = useMutation(
-    MUTATION_CREATE_TOKEN
-  );
-
+  const router = useRouter();
+  const token = useToken();
+  const isAuth = useCheckAuth();
   useEffect(() => {
-    if (auth.token && typeof window != undefined) {
-      createCsrfToken({
-        variables: { input: sessionStorage.getItem("userId") },
-      }).then((result) => {
-        setCsrfToken(result.data.createCsrfToken.token);
-      });
-    }
+    if (typeof window !== undefined && isAuth != undefined) {
+      !isAuth && router.push("/auth");console.log("Helloauth")}
   }, []);
-  console.log(csrfToken);
-  if (loading) {
-  }
   return (
-    <>
-      <CreateProduct token={csrfToken} />
-    </>
+    <Layout>
+      <Head>
+        <title>Create Products</title>
+      </Head>
+      <CreateProduct token={token} />
+    </Layout>
   );
 }

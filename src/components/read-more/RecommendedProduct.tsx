@@ -6,33 +6,17 @@ import { Product } from "../UI/Product";
 import { Product as ProductType } from "@/types/Product";
 
 type props = {
-  productId: string;
+  products: ProductType[];
+  loading?: boolean;
 };
-
-const QUERY_PRODUCT_RECOMMENDED = gql`
-  query findRecommendedProducts($input: ProductFindOptions!) {
-    findRecommendedProducts(productFindOptions: $input) {
-      _id
-      description
-      imageUrl
-      price
-      quantity
-      userId
-      title
-    }
-  }
-`;
 
 export const RecommendedProducts: React.FC<props> = (props) => {
   const [products, setProducts] = useState<ProductType[]>([]);
-  const { loading, data, error } = useQuery(QUERY_PRODUCT_RECOMMENDED, {
-    variables: { input: { productId: props.productId, limit: 4, skip: 0 } },
-  });
   useEffect(() => {
-    if (data) {
-      setProducts(data.findRecommendedProducts);
+    if (props.products) {
+      setProducts(props.products);
     }
-  }, [data]);
+  }, []);
   let productElements;
   if (products.length > 0) {
     productElements = products.map((product) => {
@@ -55,7 +39,7 @@ export const RecommendedProducts: React.FC<props> = (props) => {
         <h1 className="col-span-12 text-gray-900 font-bold text-2xl">
           Recommended Products:
         </h1>
-        {loading ? (
+        {!products ? (
           <LoadingSpinner />
         ) : (
           <div className="col-span-12 gap-5 grid grid-cols-12 [&>*]:mb-5">

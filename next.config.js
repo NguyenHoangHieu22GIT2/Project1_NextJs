@@ -2,12 +2,18 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    domains:["localhost"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "**",
         port: "",
         pathname: "**",
+      }, {
+        protocol: 'https',
+        hostname: 'assets.vercel.com',
+        port: '',
+        pathname: '/image/upload/**',
       },
     ],
   },

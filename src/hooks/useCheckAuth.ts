@@ -1,19 +1,19 @@
 import { useAppSelector } from "@/store";
 import { gql, useLazyQuery } from "@apollo/client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const QUERY_CHECK_VALIDATION = gql`
   query checkToken($input: String!) {
-    checkToken(token: $input) {
+    CheckJwtToken(token: $input) {
       email
     }
   }
 `;
-export function useCheckAuth() {
-  let token;
-  token = useAppSelector((state) => state.auth.token);
-
-  const [checkAuthLazy, { data }] = useLazyQuery(QUERY_CHECK_VALIDATION, {
+[].reduce
+export function   useCheckAuth() {
+  let [count, setCount] = useState(0)
+  let token = useAppSelector((state) => state.auth.token);
+  const [checkAuthLazy, { data, loading }] = useLazyQuery(QUERY_CHECK_VALIDATION, {
     context: {
       headers: {
         authorization: `bearer ${token}`,
@@ -23,8 +23,9 @@ export function useCheckAuth() {
   });
   useEffect(() => {
     checkAuthLazy();
+    setCount(count++)
   }, []);
-  if (data && data.checkToken.email.includes("@")) {
+  if (data) {
     return true;
-  } else if (!data) return false;
+  } else if (!loading && !data && count) return false;
 }

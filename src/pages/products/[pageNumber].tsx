@@ -1,75 +1,119 @@
+import { Layout } from "@/components/Layout/Layout";
 import { Filter } from "@/components/Products/Filter";
 import { Finder } from "@/components/Products/Finder";
 import { Pagination } from "@/components/Products/Pagination";
 import { Products } from "@/components/Products/Products";
-import { gql, useQuery } from "@apollo/client";
-import { AnimatePresence, motion } from "framer-motion";
+import { Product } from "@/types/Product";
+import { ApolloError, gql } from "@apollo/client";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { PropsWithChildren, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { client } from "../_app";
+import Head from "next/head";
+type props = {
+  pageNumber: number;
+  productCounts: number;
+  loading: boolean;
+  search: string;
+  products: Product[];
+  loadProducts: boolean;
+};
 
+const QUERY_ALL_PRODUCTS = gql`
+  query getProducts($input: ProductFindOptions!) {
+    products(productFindOptions: $input) {
+      _id
+      title
+      description
+      imageUrl
+      price
+      userId
+    }
+  }
+`;
 const QUERY_PRODUCTS_COUNT = gql`
   query findCountProducts($input: ProductFindOptions!) {
     countProducts(productFindOptions: $input)
   }
 `;
+const LIMIT = 2;
+const SKIP = 2;
 
-const ProductIndexPage: React.FC<PropsWithChildren> = (props) => {
+const ProductIndexPage: React.FC<props> = ({
+  productCounts,
+  loading,
+  search,
+  loadProducts,
+  products,
+}) => {
   const router = useRouter();
-  const valueToFind = (router.query.search as string) || "";
-  const LIMIT = 30;
-  const SKIP = 1;
-  const { data, loading } = useQuery(QUERY_PRODUCTS_COUNT, {
+
+  let pageNumber = +router.query.pageNumber!;
+  if (pageNumber !== pageNumber) {
+    pageNumber = 1;
+  }
+  return (
+    <Layout>
+      <Head>
+        <title>Products</title>
+      </Head>
+      <Finder pageNumber={pageNumber} />
+      <Filter />
+      <Products valueToFind={search} data={products} loading={loadProducts} />
+      <Pagination
+        valueToFind={search}
+        firstPage={pageNumber != 1 ? 1 : 0}
+        pageNumber={pageNumber}
+        lastPage={
+          pageNumber + 1 >= Math.ceil(productCounts / LIMIT)
+            ? 0
+            : Math.ceil(productCounts / LIMIT)
+        }
+        nextPage={pageNumber * LIMIT < productCounts ? pageNumber + 1 : 0}
+        previousPage={pageNumber * LIMIT > LIMIT ? pageNumber - 1 : 0}
+      />
+    </Layout>
+  );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  let pageNumber: number = +context.query.pageNumber!;
+  let search: string = "";
+  if (context.query) {
+    pageNumber = context.query.pageNumber ? +context.query.pageNumber : 1;
+    search = context.query.search ? context.query.search.toString() : "";
+  }
+  const { data: dataProducts, loading: loadProducts } = await client.query({
+    query: QUERY_ALL_PRODUCTS,
+    variables: {
+      input: {
+        limit: LIMIT,
+        skip: SKIP * (pageNumber - 1),
+      },
+    },
+  });
+  const products = dataProducts.products;
+  const { data, loading } = await client.query({
+    query: QUERY_PRODUCTS_COUNT,
     variables: {
       input: {
         limit: LIMIT,
         skip: SKIP,
-        words: valueToFind,
       },
     },
   });
-  const [countProducts, setCountProducts] = useState<number>(0);
-  useEffect(() => {
-    if (data) {
-      setCountProducts(data.countProducts);
-    }
-  }, [valueToFind, data]);
-  let pageNumber = +router.query.pageNumber!;
+  const productCounts = data.countProducts;
 
-  if (pageNumber !== pageNumber) {
-    pageNumber = 1;
-  }
-
-  if (loading) {
-    return <h1>Waiting</h1>;
-  }
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <Finder pageNumber={pageNumber} />
-      <Filter />
-      <Products
-        limit={LIMIT}
-        skip={SKIP}
-        valueToFind={valueToFind}
-        pageNumber={pageNumber}
-      />
-      <Pagination
-        valueToFind={valueToFind}
-        firstPage={pageNumber != 1 ? 1 : 0}
-        pageNumber={pageNumber}
-        lastPage={
-          pageNumber + 1 >= Math.ceil(countProducts / LIMIT)
-            ? 0
-            : Math.ceil(countProducts / LIMIT)
-        }
-        nextPage={pageNumber * LIMIT < countProducts ? pageNumber + 1 : 0}
-        previousPage={pageNumber * LIMIT > LIMIT ? pageNumber - 1 : 0}
-      />
-    </motion.div>
-  );
+  return {
+    props: {
+      pageNumber,
+      productCounts,
+      loading,
+      search,
+      products,
+      loadProducts,
+    },
+  };
 };
 
 export default ProductIndexPage;

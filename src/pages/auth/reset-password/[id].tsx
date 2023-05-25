@@ -1,3 +1,4 @@
+import { Layout } from "@/components/Layout/Layout";
 import { ResetPassword } from "@/components/auth/reset-password/ResetPassword";
 import { useAppDispatch } from "@/store";
 import { notificationActions } from "@/store/notification";
@@ -18,7 +19,6 @@ export default function ResetPasswordUser() {
   const { loading, data, error } = useQuery(QUERY_FIND_USER_ID, {
     variables: { input: route.query.id },
   });
-  console.log(data, error);
   if (error || !data) {
     dispatch(
       notificationActions.createNotification({
@@ -31,8 +31,8 @@ export default function ResetPasswordUser() {
   }
 
   return (
-    <>
+    <Layout>
       <ResetPassword />
-    </>
+    </Layout>
   );
 }

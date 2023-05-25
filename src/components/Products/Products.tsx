@@ -1,11 +1,13 @@
-import { PropsWithChildren, useEffect, useState } from "react";
+import { Context, PropsWithChildren, useEffect, useState } from "react";
 import { SystemUI } from "../UI/SystemUI";
 import { Product } from "../UI/Product";
 import product1 from "../../assets/product1.jpg";
 import user1 from "../../assets/user1.jpg";
-import { gql, useQuery } from "@apollo/client";
+import { ApolloError, gql, useQuery } from "@apollo/client";
 import { Product as ProductType } from "@/types/Product";
 import { LoadingSpinner } from "../UI/Loading";
+import { GetServerSidePropsContext } from "next";
+import { ProductSmall } from "../UI/ProductSmall";
 
 const QUERY_ALL_PRODUCTS = gql`
   query getProducts($input: ProductFindOptions!) {
@@ -21,77 +23,38 @@ const QUERY_ALL_PRODUCTS = gql`
 `;
 type props = {
   valueToFind: string;
-  pageNumber: number;
-  limit: number;
-  skip: number;
+  data: ProductType[];
+  loading: boolean;
+  error?: ApolloError | undefined;
 };
-export function Products(props: props) {
+export function Products({ loading, data, valueToFind, error }: props) {
   const [products, setProducts] = useState<ProductType[]>([]);
-  const { data, loading, error } = useQuery(QUERY_ALL_PRODUCTS, {
-    variables: {
-      input: {
-        limit: props.limit,
-        skip: (props.pageNumber - 1) * props.skip,
-        words: props.valueToFind,
-      },
-    },
-  });
   useEffect(() => {
-    if (data) setProducts(data.products);
+    if (data) setProducts(data);
   }, [data]);
-  let productElements;
   if (error) {
     return (
       <h1 className="text-center text-heading font-bold text-white">Error</h1>
     );
   }
-  if (products.length > 0) {
-    productElements = products.map((product) => {
-      if (
-        props.valueToFind.length > 0 &&
-        product.title.match(new RegExp(".*" + props.valueToFind + ".*", "i"))
-      ) {
-        return (
-          <Product
-            key={product._id}
-            _id={product._id}
-            title={product.title}
-            price={product.price}
-            description={product.description}
-            productImage={product.imageUrl}
-            userImage={user1}
-          />
-        );
-      } else if (props.valueToFind.length == 0)
-        return (
-          <Product
-            key={product._id}
-            _id={product._id}
-            title={product.title}
-            price={product.price}
-            description={product.description}
-            productImage={product.imageUrl}
-            userImage={user1}
-          />
-        );
-    });
-  } else if (products.length <= 0) {
-    productElements = (
-      <h1 className="col-span-12 text-white text-4xl text-center">
-        No Product Found...
-      </h1>
-    );
-  }
   return (
     <section className="py-5 xl:py-12">
       <SystemUI>
-        {loading || !data ? (
-          <LoadingSpinner />
-        ) : (
-          <div className=" col-span-12  grid gap-3  grid-cols-12">
-            {productElements}
-          </div>
-        )}
+        <div className=" col-span-12  grid gap-3  grid-cols-12">
+          {products.map((product) => {
+            return (
+              <ProductSmall
+                key={product._id}
+                _id={product._id}
+                title={product.title}
+                price={product.price}
+                description={product.description}
+                productImage={product.imageUrl}
+                userImage={user1}
+              />
+            );
+          })}
+        </div>
       </SystemUI>
     </section>
   );
