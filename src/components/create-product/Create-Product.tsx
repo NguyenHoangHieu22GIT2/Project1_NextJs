@@ -11,19 +11,20 @@ import { NotificationCard } from "../UI/NotificationCard";
 import { useRouter } from "next/router";
 import { Stream } from "stream";
 import { useDropzone } from "react-dropzone";
+import { toBase64 } from "@/utils/toBase64";
 
 type props = {
   token: string;
+  salt: string;
 };
 
 const MUTATION_CREATE_PRODUCT = gql`
-  mutation createProduct($input: CreateProductInput!, $file: Upload!) {
-    createProduct(createProductInput: $input, file: $file) {
+  mutation createProduct($input: CreateProductInput!) {
+    createProduct(createProductInput: $input) {
       title
     }
   }
 `;
-
 export function CreateProduct(props: props) {
   const router = useRouter();
   const [file, setFile] = useState<File>();
@@ -82,14 +83,20 @@ export function CreateProduct(props: props) {
     if (!formIsValid) {
       return;
     }
+    if (file!.type !== "jpg" && file!.type !== "jpeg" && file!.type !== "png") {
+      return;
+    }
     try {
-      console.log(file);
-      const convertedFile = {
-        filename: file!.name,
-        mimetype: file!.type,
-        encoding: "7bit",
-        createReadStream: () => file!.stream,
-      };
+      await fetch("http://localhost:4000/uploadFile", {
+        method: "POST",
+        body: JSON.stringify({
+          fileName: props.salt + file!.name,
+          fileBase64: await toBase64(file!),
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const result = await createProductFn({
         variables: {
           input: {
@@ -99,12 +106,7 @@ export function CreateProduct(props: props) {
             token: props.token,
             stock: +stockInput.value,
             discount: +discountInput.value,
-          },
-          file: {
-            filename: file!.name,
-            mimetype: file!.type,
-            encoding: "7bit",
-            createReadStream: () => Stream,
+            image: props.salt + file!.name,
           },
         },
         context: {
@@ -167,7 +169,11 @@ export function CreateProduct(props: props) {
           <h1 className="text-center uppercase border-b-2 border-dotted border-b-blue-300 font-bold text-subHeading col-span-12">
             Create Product
           </h1>
-          <form className="col-span-12 mt-14 [&>*]:mb-10" onSubmit={submit}>
+          <form
+            encType="multipart/form-data"
+            className="col-span-12 mt-14 [&>*]:mb-10"
+            onSubmit={submit}
+          >
             <Input label="Title" type="text" input={titleInput} />
             <Input label="Price" type="text" input={priceInput} />
             <TextArea label="Description" input={descriptionInput} />
