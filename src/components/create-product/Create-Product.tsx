@@ -4,19 +4,21 @@ import { SystemUI } from "../UI/SystemUI";
 import { Button } from "../UI/Button";
 import { TextArea } from "../UI/Textarea";
 import { gql, useLazyQuery, useMutation } from "@apollo/client";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { notificationActions } from "@/store/notification";
 import { NotificationCard } from "../UI/NotificationCard";
 import { useRouter } from "next/router";
+import { Stream } from "stream";
+import { useDropzone } from "react-dropzone";
 
 type props = {
   token: string;
 };
 
 const MUTATION_CREATE_PRODUCT = gql`
-  mutation createProduct($input: CreateProductInput!) {
-    createProduct(createProductInput: $input) {
+  mutation createProduct($input: CreateProductInput!, $file: Upload!) {
+    createProduct(createProductInput: $input, file: $file) {
       title
     }
   }
@@ -24,8 +26,18 @@ const MUTATION_CREATE_PRODUCT = gql`
 
 export function CreateProduct(props: props) {
   const router = useRouter();
-  const [file,setFile] = useState<File>();
+  const [file, setFile] = useState<File>();
+  const onDrop = useCallback(
+    ([file]: [File]) => {
+      setFile(file);
+    },
+    [setFile]
+  );
+  //@ts-ignore
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
   const dispatch = useAppDispatch();
+
   const [createProductFn, {}] = useMutation(MUTATION_CREATE_PRODUCT);
   const token = useAppSelector((state) => state.auth.token);
   const [tags, setTags] = useState<any[]>([]);
@@ -62,27 +74,37 @@ export function CreateProduct(props: props) {
   });
 
   const formIsValid =
-    titleInput.isValid &&
-    descriptionInput.isValid &&
-    priceInput.isValid
+    titleInput.isValid && descriptionInput.isValid && priceInput.isValid;
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log(file)
+
     if (!formIsValid) {
       return;
     }
     try {
+      console.log(file);
+      const convertedFile = {
+        filename: file!.name,
+        mimetype: file!.type,
+        encoding: "7bit",
+        createReadStream: () => file!.stream,
+      };
       const result = await createProductFn({
         variables: {
           input: {
             title: titleInput.value,
             price: +priceInput.value,
             description: descriptionInput.value,
-            imageUrl: file,
             token: props.token,
             stock: +stockInput.value,
             discount: +discountInput.value,
+          },
+          file: {
+            filename: file!.name,
+            mimetype: file!.type,
+            encoding: "7bit",
+            createReadStream: () => Stream,
           },
         },
         context: {
@@ -129,7 +151,6 @@ export function CreateProduct(props: props) {
     setTags((state) => [...state, { name: "", options: [] }]);
   }
 
-
   return (
     <section className="my-10">
       <NotificationCard
@@ -147,17 +168,19 @@ export function CreateProduct(props: props) {
             Create Product
           </h1>
           <form className="col-span-12 mt-14 [&>*]:mb-10" onSubmit={submit}>
-            
             <Input label="Title" type="text" input={titleInput} />
             <Input label="Price" type="text" input={priceInput} />
             <TextArea label="Description" input={descriptionInput} />
             {/* <Input label="Image Url" type="file" input={imageInput} /> */}
-            <input type="file" onChange={e=>{
-              if(e.target.validity.valid){
-                setFile(e.target.files?.item(0)!);
-              }
-              console.log(e.target.files?.item(0))
-            }} />
+            <div {...getRootProps()}>
+              <input {...getInputProps()} />
+              {isDragActive ? (
+                <p>Drop the files here ...</p>
+              ) : (
+                <p>Drag 'n' drop some files here, or click to select files</p>
+              )}
+            </div>
+
             <Input
               label="How Many Stock do you have ?"
               type="text"
