@@ -17,7 +17,11 @@ const QUERY_TOKEN_NEW_USER = gql`
   }
 `;
 
-export function Auth() {
+type props = {
+  salt: string;
+};
+
+export function Auth(props: props) {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [message, setMessage] = useState("");
@@ -96,15 +100,17 @@ export function Auth() {
         <div className="col-span-12 bg-slate-400 py-5 px-2 rounded-lg grid grid-cols-12 gap-2">
           <button
             onClick={chooseLogin}
-            className={`${isLogin ? "bg-primary" : "bg-subPrimary hover:bg-primary/80"
-              } py-2 text-neutral-800 rounded-lg col-span-6  font-bold transition`}
+            className={`${
+              isLogin ? "bg-primary" : "bg-subPrimary hover:bg-primary/80"
+            } py-2 text-neutral-800 rounded-lg col-span-6  font-bold transition`}
           >
             Login
           </button>
           <button
             onClick={chooseRegister}
-            className={`${!isLogin ? "bg-primary" : "bg-subPrimary hover:bg-primary/80"
-              } rounded-lg col-span-6 text-slate-900 font-bold transition`}
+            className={`${
+              !isLogin ? "bg-primary" : "bg-subPrimary hover:bg-primary/80"
+            } rounded-lg col-span-6 text-slate-900 font-bold transition`}
           >
             Register
           </button>
@@ -156,7 +162,11 @@ export function Auth() {
             )}
           </div>
           <div className="xl:col-span-6  pt-10 col-span-12">
-            {isLogin ? <Login onHaveToken={doesHaveToken} /> : <Register />}
+            {isLogin ? (
+              <Login onHaveToken={doesHaveToken} />
+            ) : (
+              <Register salt={props.salt} />
+            )}
           </div>
         </div>
       </SystemUI>

@@ -13,7 +13,7 @@ type props = {
   title: string;
   price: number;
   description: string;
-  productImage: string;
+  images: string[];
   userImage?: StaticImageData;
 };
 
@@ -27,7 +27,8 @@ export function Product(props: props) {
   return (
     <Link
       href={`/products/product/${props._id}`}
-      className="xl:col-span-4 shadow-2xl flex flex-col justify-between col-span-12 text-gray-900 bg-gray-200 relative rounded-md">
+      className="xl:col-span-4 shadow-2xl flex flex-col justify-between col-span-12 text-gray-900 bg-gray-200 relative rounded-md"
+    >
       {/* <Image
         src={props.userImage}
         alt="User"
@@ -36,7 +37,7 @@ export function Product(props: props) {
       <div className="w-full aspect-square relative overflow-hidden xl:col-span-6 col-span-12">
         <Image
           className="hover:scale-125  transition"
-          src={process.env.NEXT_PUBLIC_SERVER_IMAGE_URI + props.productImage}
+          src={process.env.NEXT_PUBLIC_SERVER_IMAGE_URI + props.images[0]}
           sizes="100wh"
           fill
           alt={props.title}

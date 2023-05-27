@@ -10,8 +10,9 @@ import { notificationActions } from "@/store/notification";
 import { NotificationCard } from "../UI/NotificationCard";
 import { useRouter } from "next/router";
 import { Stream } from "stream";
-import { useDropzone } from "react-dropzone";
+import Dropzone, { useDropzone } from "react-dropzone";
 import { toBase64 } from "@/utils/toBase64";
+import Image from "next/image";
 
 type props = {
   token: string;
@@ -27,31 +28,41 @@ const MUTATION_CREATE_PRODUCT = gql`
 `;
 export function CreateProduct(props: props) {
   const router = useRouter();
-  const [file, setFile] = useState<File>();
+  const [files, setFiles] = useState<File[]>([]);
   const onDrop = useCallback(
-    ([file]: [File]) => {
-      setFile(file);
+    (files: File[]) => {
+      let isValid = true;
+      files.forEach((file) => {
+        if (
+          !file.type.endsWith("jpg") &&
+          !file.type.endsWith("jpeg") &&
+          !file.type.endsWith("png")
+        ) {
+          isValid = false;
+        }
+      });
+      isValid &&
+        setFiles((prevArray) => {
+          return [...prevArray, ...files];
+        });
     },
-    [setFile]
+    [setFiles]
   );
-  //@ts-ignore
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
   const dispatch = useAppDispatch();
-
   const [createProductFn, {}] = useMutation(MUTATION_CREATE_PRODUCT);
   const token = useAppSelector((state) => state.auth.token);
-  const [tags, setTags] = useState<any[]>([]);
-  const updateTagName = (index: number, newName: string) => {
-    const newTags = [...tags];
-    newTags[index].name = newName;
-    setTags(newTags);
-  };
-  const updateTagOptions = (index: number, newOptions: string[]) => {
-    const newTags = [...tags];
-    newTags[index].options = newOptions;
-    setTags(newTags);
-  };
+  // const [tags, setTags] = useState<any[]>([]);
+  // const updateTagName = (index: number, newName: string) => {
+  //   const newTags = [...tags];
+  //   newTags[index].name = newName;
+  //   setTags(newTags);
+  // };
+  // const updateTagOptions = (index: number, newOptions: string[]) => {
+  //   const newTags = [...tags];
+  //   newTags[index].options = newOptions;
+  //   setTags(newTags);
+  // };
   const [tagElement, setTagElement] = useState<number>(0);
   const titleInput = useInput((data) => {
     return data.length > 10;
@@ -62,11 +73,6 @@ export function CreateProduct(props: props) {
   const descriptionInput = useInput((data) => {
     return data.length > 20;
   });
-  const imageInput = useInput((data) => {
-    return /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/.test(
-      data
-    );
-  });
   const stockInput = useInput((data) => {
     return +data > 100;
   });
@@ -74,29 +80,37 @@ export function CreateProduct(props: props) {
     return +data >= 0;
   });
 
-  const formIsValid =
+  let formIsValid =
     titleInput.isValid && descriptionInput.isValid && priceInput.isValid;
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    if (!formIsValid) {
-      return;
-    }
-    if (file!.type !== "jpg" && file!.type !== "jpeg" && file!.type !== "png") {
+    files?.forEach((file) => {
+      if (
+        file!.type !== "jpg" &&
+        file!.type !== "jpeg" &&
+        file!.type !== "png"
+      ) {
+        formIsValid = false;
+      }
+    });
+    if (!formIsValid && files && files.length <= 0) {
       return;
     }
     try {
-      await fetch("http://localhost:4000/uploadFile", {
-        method: "POST",
-        body: JSON.stringify({
-          fileName: props.salt + file!.name,
-          fileBase64: await toBase64(file!),
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const images = files?.map(async (file) => {
+        return {
+          fileName: props.salt + file.name,
+          fileBase64: await toBase64(file),
+          mimetype: file.type,
+        };
       });
+      const updatedImages = await Promise.all(images);
+      console.log(updatedImages);
+      const imagesName = files?.map((file) => {
+        return props.salt + file.name;
+      });
+
       const result = await createProductFn({
         variables: {
           input: {
@@ -106,7 +120,7 @@ export function CreateProduct(props: props) {
             token: props.token,
             stock: +stockInput.value,
             discount: +discountInput.value,
-            image: props.salt + file!.name,
+            images: imagesName,
           },
         },
         context: {
@@ -126,6 +140,13 @@ export function CreateProduct(props: props) {
         );
       }
       if (result.data) {
+        await fetch("http://localhost:4000/uploadFile", {
+          method: "POST",
+          body: JSON.stringify(updatedImages),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         dispatch(
           notificationActions.createNotification({
             status: "success",
@@ -148,11 +169,11 @@ export function CreateProduct(props: props) {
   function turnOffNotificationCard() {
     dispatch(notificationActions.deleteNotification({}));
   }
-  function createTagInput() {
-    setTagElement(tagElement + 1);
-    setTags((state) => [...state, { name: "", options: [] }]);
-  }
-
+  // function createTagInput() {
+  //   setTagElement(tagElement + 1);
+  //   setTags((state) => [...state, { name: "", options: [] }]);
+  // }
+  // console.log(files);
   return (
     <section className="my-10">
       <NotificationCard
@@ -178,7 +199,10 @@ export function CreateProduct(props: props) {
             <Input label="Price" type="text" input={priceInput} />
             <TextArea label="Description" input={descriptionInput} />
             {/* <Input label="Image Url" type="file" input={imageInput} /> */}
-            <div {...getRootProps()}>
+            <div
+              {...getRootProps()}
+              className="border-b-2 border-b-[#43cea6] py-3"
+            >
               <input {...getInputProps()} />
               {isDragActive ? (
                 <p>Drop the files here ...</p>
@@ -186,7 +210,33 @@ export function CreateProduct(props: props) {
                 <p>Drag 'n' drop some files here, or click to select files</p>
               )}
             </div>
-
+            <div className="flex gap-2 flex-wrap">
+              {files.length > 0 &&
+                files.map((image, index) => {
+                  return (
+                    <div key={index} className="relative">
+                      <Image
+                        src={`${URL.createObjectURL(image)}`}
+                        alt=""
+                        width={200}
+                        height={200}
+                      />
+                      <span
+                        className="absolute top-0 right-0 bg-slate-500 px-3 py-1 cursor-pointer rounded-full"
+                        onClick={() => {
+                          setFiles((prevArray) => {
+                            return prevArray.filter(
+                              (file) => file.name !== image.name
+                            );
+                          });
+                        }}
+                      >
+                        X
+                      </span>
+                    </div>
+                  );
+                })}
+            </div>
             <Input
               label="How Many Stock do you have ?"
               type="text"

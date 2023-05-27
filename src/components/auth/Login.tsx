@@ -15,6 +15,9 @@ const QUERY_LOGIN_USER = gql`
       ... on jwtToken {
         access_token
         userId
+        email
+        username
+        avatar
       }
       ... on ErrorHandler {
         message
@@ -64,6 +67,9 @@ export const Login: React.FC<props> = (props) => {
             authActions.login({
               token: result.data.login.access_token,
               userId: result.data.login.userId,
+              avatar: result.data.login.avatar,
+              email: result.data.login.email,
+              username: result.data.login.username,
             })
           );
           dispatch(

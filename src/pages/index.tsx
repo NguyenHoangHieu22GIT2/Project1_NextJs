@@ -17,7 +17,7 @@ const QUERY_ALL_PRODUCTS = gql`
       _id
       title
       description
-      imageUrl
+      images
       price
       userId
     }
@@ -28,7 +28,6 @@ type props = {
   loading: boolean;
 };
 export default function Home(props: props) {
-  console.log(props.products)
   return (
     <>
       <Head>

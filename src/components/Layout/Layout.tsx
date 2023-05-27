@@ -11,6 +11,9 @@ const QUERY_CHECK_USER = gql`
   query checkToken($input: String!) {
     CheckJwtToken(token: $input) {
       _id
+      avatar
+      email
+      username
     }
   }
 `;
@@ -31,6 +34,9 @@ export function Layout(props: PropsWithChildren) {
               authActions.login({
                 token: getJwtToken()!,
                 userId: result.data.CheckJwtToken._id,
+                avatar: result.data.CheckJwtToken.avatar,
+                email: result.data.CheckJwtToken.email,
+                username: result.data.CheckJwtToken.username,
               })
             );
             sessionStorage.setItem("userId", result.data.CheckJwtToken._id);

@@ -3,7 +3,13 @@ import { gql } from "@apollo/client";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 type loginInformation = {
-  payload: { token: string; userId: string };
+  payload: {
+    token: string;
+    userId: string;
+    avatar: string;
+    email: string;
+    username: string;
+  };
   type: string;
 };
 
@@ -25,11 +31,17 @@ const authSlice = createSlice({
   initialState: {
     token: "",
     userId: "",
+    avatar: "",
+    email: "",
+    username: "",
   },
   reducers: {
     login(state, action: loginInformation) {
       state.token = action.payload.token;
       state.userId = action.payload.userId;
+      state.avatar = action.payload.avatar;
+      state.email = action.payload.email;
+      state.username = action.payload.username;
     },
     logout(state) {
       state.token = "";

@@ -17,7 +17,7 @@ const QUERY_ONE_PRODUCT = gql`
       title
       price
       description
-      imageUrl
+      images
       discount
       stock
     }
@@ -29,7 +29,7 @@ const QUERY_PRODUCT_RECOMMENDED = gql`
     findRecommendedProducts(productFindOptions: $input) {
       _id
       description
-      imageUrl
+      images
       price
       quantity
       userId
@@ -57,6 +57,7 @@ const ProductPage: React.FC<props> = (props) => {
   );
 };
 export default ProductPage;
+//@ts-ignore
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let props;
   try {
@@ -65,11 +66,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       query: QUERY_ONE_PRODUCT,
       variables: { input: productId },
     });
+    console.log(resultProduct);
     const resultProductRecommend = await client.query({
       query: QUERY_PRODUCT_RECOMMENDED,
       variables: { input: { productId, limit: 4, skip: 0 } },
     });
-
     props = {
       product: resultProduct.data.findProductById,
       loadingProduct: resultProduct.loading,
@@ -77,13 +78,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       loadingProducts: resultProductRecommend.loading,
     };
   } catch (error: any) {
+    // for (const key in error) {
+    //   console.log(key);
+    // }
+    console.log("error");
     props = {
-      notFound: true,
+      notFound: false,
     };
   }
   if (props.notFound) {
     return {
-      notFound: true,
+      notFound: false,
     };
   }
   return {

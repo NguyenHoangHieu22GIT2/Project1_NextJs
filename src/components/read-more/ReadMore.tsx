@@ -24,6 +24,7 @@ export const ReadMore: React.FC<props> = (props) => {
   const authToken = useAppSelector((state) => {
     return state.auth.token;
   });
+  const [imageTargeted, setImageTargeted] = useState<number>(0);
   const [product, setProduct] = useState<Product>();
   const [quantity, setQuantity] = useState(0);
   const [addToCartFn, { loading, data, error }] =
@@ -52,12 +53,38 @@ export const ReadMore: React.FC<props> = (props) => {
       <div className="col-span-12 gap-3 grid grid-cols-12 ">
         <div className="w-full aspect-square relative xl:col-span-6 col-span-12">
           <Image
-            fill
             sizes="80vw"
+            width={10000}
+            height={10000}
             className="col-span-12"
-            src={process.env.NEXT_PUBLIC_SERVER_IMAGE_URI + product.imageUrl}
+            src={
+              process.env.NEXT_PUBLIC_SERVER_IMAGE_URI +
+              product.images[imageTargeted]
+            }
             alt={product.title}
           />
+          <div className="flex mt-5 flex-wrap gap-3">
+            {product.images.map((image, index) => {
+              if (index != imageTargeted) {
+                return (
+                  <Image
+                    key={index}
+                    className="cursor-pointer"
+                    onClick={() => {
+                      setImageTargeted(index);
+                    }}
+                    src={
+                      process.env.NEXT_PUBLIC_SERVER_IMAGE_URI +
+                      product.images[index]
+                    }
+                    alt={product.title}
+                    width={100}
+                    height={100}
+                  />
+                );
+              }
+            })}
+          </div>
         </div>
         <form
           onSubmit={submit}

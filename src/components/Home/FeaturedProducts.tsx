@@ -22,7 +22,7 @@ export function FeaturedProducts({ products, loading }: props) {
       title={product.title}
       price={product.price}
       description={product.description}
-      productImage={product.imageUrl}
+      images={product.images}
       userImage={user1}
     />
   ));

@@ -9,18 +9,6 @@ import { LoadingSpinner } from "../UI/Loading";
 import { GetServerSidePropsContext } from "next";
 import { ProductSmall } from "../UI/ProductSmall";
 
-const QUERY_ALL_PRODUCTS = gql`
-  query getProducts($input: ProductFindOptions!) {
-    products(productFindOptions: $input) {
-      _id
-      title
-      description
-      imageUrl
-      price
-      userId
-    }
-  }
-`;
 type props = {
   valueToFind: string;
   data: ProductType[];
@@ -49,7 +37,7 @@ export function Products({ loading, data, valueToFind, error }: props) {
                 title={product.title}
                 price={product.price}
                 description={product.description}
-                productImage={product.imageUrl}
+                images={product.images}
                 userImage={user1}
               />
             );

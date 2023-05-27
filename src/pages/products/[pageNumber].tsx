@@ -25,7 +25,7 @@ const QUERY_ALL_PRODUCTS = gql`
       _id
       title
       description
-      imageUrl
+      images
       price
       userId
     }
@@ -77,7 +77,6 @@ const ProductIndexPage: React.FC<props> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log("Hello");
   let pageNumber: number = +context.query.pageNumber!;
   let search: string = "";
   if (context.query) {

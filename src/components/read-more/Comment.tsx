@@ -128,8 +128,7 @@ export function Comment() {
         <div>
           <ul>
             <li>
-              <div>
-              </div>
+              <div></div>
               <div></div>
             </li>
           </ul>
