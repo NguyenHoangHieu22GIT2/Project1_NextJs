@@ -139,6 +139,7 @@ export function CreateProduct(props: props) {
           })
         );
       }
+
       if (result.data) {
         await fetch("http://localhost:4000/uploadFile", {
           method: "POST",

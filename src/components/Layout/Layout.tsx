@@ -3,7 +3,7 @@ import { GoUp } from "@/components/UI/GoUp";
 import { Main } from "./Main";
 import { motion } from "framer-motion";
 import { useAppDispatch } from "@/store";
-import { gql } from "@apollo/client";
+import { ApolloError, gql } from "@apollo/client";
 import { client } from "@/pages/_app";
 import { authActions } from "@/store/auth";
 import { getJwtToken, removeAllKey } from "@/utils/sessionInteraction";
@@ -42,10 +42,12 @@ export function Layout(props: PropsWithChildren) {
             sessionStorage.setItem("userId", result.data.CheckJwtToken._id);
           }
           if (result.error) {
+            console.log(result.error);
             removeAllKey();
           }
         })
-        .catch(() => {
+        .catch((error: ApolloError) => {
+          console.log(error);
           removeAllKey();
         });
   }, []);

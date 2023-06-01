@@ -31,7 +31,7 @@ export default function Home(props: props) {
   return (
     <>
       <Head>
-        <title>K-rose</title>{" "}
+        <title>K-rose</title>
         <meta property="og:title" content="K-rose" key="title" />
       </Head>
       <Layout>

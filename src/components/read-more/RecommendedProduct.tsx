@@ -27,7 +27,7 @@ export const RecommendedProducts: React.FC<props> = (props) => {
           title={product.title}
           price={product.price}
           description={product.description}
-          productImage={product.imageUrl}
+          images={product.images}
         />
       );
     });

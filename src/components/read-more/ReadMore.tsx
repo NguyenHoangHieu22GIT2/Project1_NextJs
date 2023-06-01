@@ -6,7 +6,6 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { LoadingSpinner } from "../UI/Loading";
 import { Product } from "@/types/Product";
 import { useAppSelector } from "@/store";
-
 type props = {
   product: Product;
   csrfToken: string;
@@ -19,7 +18,6 @@ const MUTATION_ADD_TO_CART = gql`
     }
   }
 `;
-
 export const ReadMore: React.FC<props> = (props) => {
   const authToken = useAppSelector((state) => {
     return state.auth.token;
@@ -56,7 +54,7 @@ export const ReadMore: React.FC<props> = (props) => {
             sizes="80vw"
             width={10000}
             height={10000}
-            className="col-span-12"
+            className="col-span-12 object-cover aspect-square"
             src={
               process.env.NEXT_PUBLIC_SERVER_IMAGE_URI +
               product.images[imageTargeted]
@@ -69,7 +67,7 @@ export const ReadMore: React.FC<props> = (props) => {
                 return (
                   <Image
                     key={index}
-                    className="cursor-pointer"
+                    className="cursor-pointer object-cover aspect-square"
                     onClick={() => {
                       setImageTargeted(index);
                     }}

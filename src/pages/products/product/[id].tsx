@@ -45,13 +45,14 @@ type props = {
   productsRecommended: Product[];
   loadingProduct: boolean;
   loadingProducts: boolean;
+  pageRating: number;
 };
 const ProductPage: React.FC<props> = (props) => {
   const csrfToken = useToken();
   return (
     <Layout>
       <ReadMore csrfToken={csrfToken} product={props.product} />
-      <Comment />
+      <Comment pageRating={props.pageRating} productId={props.product._id} />
       <RecommendedProducts products={props.productsRecommended} />
     </Layout>
   );
@@ -62,11 +63,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let props;
   try {
     const productId = context.query.id;
+    let pageRating = 1;
+    if (context.params && context.params.page) {
+      pageRating = +context.params.page;
+    }
     const resultProduct = await client.query({
       query: QUERY_ONE_PRODUCT,
       variables: { input: productId },
     });
-    console.log(resultProduct);
     const resultProductRecommend = await client.query({
       query: QUERY_PRODUCT_RECOMMENDED,
       variables: { input: { productId, limit: 4, skip: 0 } },
@@ -76,11 +80,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       loadingProduct: resultProduct.loading,
       productsRecommended: resultProductRecommend.data.findRecommendedProducts,
       loadingProducts: resultProductRecommend.loading,
+      pageRating,
     };
   } catch (error: any) {
-    // for (const key in error) {
-    //   console.log(key);
-    // }
     console.log("error");
     props = {
       notFound: false,
