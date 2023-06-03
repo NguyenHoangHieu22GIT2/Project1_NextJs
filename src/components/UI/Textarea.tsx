@@ -11,9 +11,9 @@ type props = {
     className?: string;
   };
   placeholder?: string;
-  className?:string
+  className?: string;
 };
-export function TextArea({ input, label, placeholder,className }: props) {
+export function TextArea({ input, label, placeholder, className }: props) {
   const invalidClassName = input.invalid
     ? "text-red-900 bg-pink-200 border-red-800"
     : "";
@@ -35,14 +35,14 @@ export function TextArea({ input, label, placeholder,className }: props) {
       <textarea
         placeholder={placeholder}
         ref={textAreaRef}
-        rows={1}
+        rows={3}
         onChange={handleChange}
         onBlur={input.changeBlur}
         value={input.value}
         className={`bg-transparent overflow-y-hidden ${input.className} h-fit  w-full border-b-2 outline-none peer border-primary ${invalidClassName} ${className}`}
       ></textarea>
       <label
-        className={`absolute ${labelclassNameInvalid} -z-10 left-0 -top-2  transition font-bold text-attention origin-top-left
+        className={`absolute ${labelclassNameInvalid} -z-10 left-0 -top-2  transition font-bold           text-attention origin-top-left
          ${
            input.value.toString().length > 0
              ? "-translate-y-7 text-primary xl:block scale-75 "

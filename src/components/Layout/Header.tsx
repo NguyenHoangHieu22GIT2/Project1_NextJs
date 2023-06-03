@@ -149,7 +149,7 @@ function Header() {
                 onClick={toggleOpenNav}
               >
                 <nav
-                  className={`   h-screen w-fit transition $ bg-slate-800 px-2 py-5`}
+                  className={`h-screen w-fit transition $ bg-slate-800 px-2 py-5`}
                 >
                   <ul
                     className={`${montserrat.className} flex flex-col gap-5 text-gray-300 text-lg font-bold justify-between`}
@@ -247,6 +247,18 @@ function Header() {
                     >
                       Create Products
                     </Link>
+                  </li>
+                  <li className="hover:text-primary transition ">
+                    <button>Messages</button>
+                    {/* <Link
+                      href="/messages"
+                      className={`inline-block   ${
+                        route.pathname == "/create-product" &&
+                        "text-primary font-bold"
+                      }`}
+                    >
+                      Messages
+                    </Link> */}
                   </li>
                 </>
               )}

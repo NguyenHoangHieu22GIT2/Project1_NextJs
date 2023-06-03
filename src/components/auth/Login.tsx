@@ -7,6 +7,7 @@ import { useAppDispatch } from "@/store";
 import { authActions } from "@/store/auth";
 import { notificationActions } from "@/store/notification";
 import Link from "next/link";
+import { client } from "@/pages/_app";
 
 const QUERY_LOGIN_USER = gql`
   query login($input: LoginUserInput!) {
@@ -40,57 +41,61 @@ export const Login: React.FC<props> = (props) => {
       data
     );
   });
-  const [login] = useLazyQuery(QUERY_LOGIN_USER);
+  // const [login] = useLazyQuery(QUERY_LOGIN_USER);
   const formValid = emailInput.isValid && passwordInput.isValid;
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (formValid) {
-      login({
-        variables: {
-          input: { email: emailInput.value, password: passwordInput.value },
-        },
-      }).then((result) => {
-        console.log(result);
-        if (result.data && result.data.login.message)
-          dispatch(
-            notificationActions.createNotification({
-              status: "token",
-              title: "Enter the token",
-              description: "Please enter the Token to be able to continue...",
-            })
-          );
-        else if (result.data && result.data.login.access_token) {
-          props.onHaveToken(result.data.login.access_token);
-          sessionStorage.setItem("token", result.data.login.access_token);
-          sessionStorage.setItem("userId", result.data.login.userId);
-          dispatch(
-            authActions.login({
-              token: result.data.login.access_token,
-              userId: result.data.login.userId,
-              avatar: result.data.login.avatar,
-              email: result.data.login.email,
-              username: result.data.login.username,
-            })
-          );
-          dispatch(
-            notificationActions.createNotification({
-              status: "success",
-              title: "Login successfully",
-              description:
-                "Welcome abroad, Hope you have fun using our website.",
-            })
-          );
-        } else if (result.error) {
-          props.onHaveToken(result.error.name);
+      client
+        .query({
+          query: QUERY_LOGIN_USER,
+          variables: {
+            input: { email: emailInput.value, password: passwordInput.value },
+          },
+        })
+        .then((result) => {
+          // console.log(result);
+          if (result.data && result.data.login.message) {
+            // console.log(result.data);
+            props.onHaveToken(result.data.login.message);
+            dispatch(
+              notificationActions.createNotification({
+                status: "token",
+                title: "Enter the token",
+                description: "Please enter the Token to be able to continue...",
+              })
+            );
+          } else if (result.data && result.data.login.access_token) {
+            sessionStorage.setItem("token", result.data.login.access_token);
+            sessionStorage.setItem("userId", result.data.login.userId);
+            dispatch(
+              authActions.login({
+                token: result.data.login.access_token,
+                userId: result.data.login.userId,
+                avatar: result.data.login.avatar,
+                email: result.data.login.email,
+                username: result.data.login.username,
+              })
+            );
+            dispatch(
+              notificationActions.createNotification({
+                status: "success",
+                title: "Login successfully",
+                description:
+                  "Welcome abroad, Hope you have fun using our website.",
+              })
+            );
+          }
+        })
+        .catch((err) => {
           dispatch(
             notificationActions.createNotification({
               status: "error",
-              title: "Login Failed",
-              description: "Please check your credentials again! :(",
+              title: "Validation failed!",
+              description: err.message,
             })
           );
-        }
-      });
+        });
     }
   }
   return (

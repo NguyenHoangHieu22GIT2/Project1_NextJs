@@ -1,5 +1,7 @@
 import { Rating } from "./Rating";
+import { User } from "./User.Schema";
 export type Product = {
+  user: User;
   _id: string;
   title: string;
   description: string;
@@ -10,4 +12,5 @@ export type Product = {
   stock: number;
   discount: number;
   ratings: Rating[];
+  hasSold: number;
 };

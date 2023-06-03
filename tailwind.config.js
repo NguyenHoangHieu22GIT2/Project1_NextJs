@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        runOutOfTime: "runOutOfTime 4.5s linear forwards",
+      },
       colors: {
         primary: "#44D0A7",
         subPrimary: "#A5F8E0",
@@ -19,6 +22,12 @@ module.exports = {
         subHeading: "2.25rem",
         attention: "1.5rem",
         paragraph: "1rem",
+      },
+      keyframes: {
+        runOutOfTime: {
+          "0%": { width: "100%" },
+          "100%": { width: "0%" },
+        },
       },
     },
   },

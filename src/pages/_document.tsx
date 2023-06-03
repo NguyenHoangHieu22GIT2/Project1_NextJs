@@ -21,6 +21,7 @@ export default function Document() {
         <div id="modal"></div>
         <div id="backdrop"></div>
         <div id="card"></div>
+        <div id="lightNotification"></div>
         <Main />
         <NextScript />
       </body>

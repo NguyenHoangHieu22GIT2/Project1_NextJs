@@ -1,12 +1,14 @@
 import { PropsWithChildren, useEffect } from "react";
 import { GoUp } from "@/components/UI/GoUp";
 import { Main } from "./Main";
-import { motion } from "framer-motion";
-import { useAppDispatch } from "@/store";
+import { AnimatePresence, motion } from "framer-motion";
+import { useAppDispatch, useAppSelector } from "@/store";
 import { ApolloError, gql } from "@apollo/client";
 import { client } from "@/pages/_app";
 import { authActions } from "@/store/auth";
 import { getJwtToken, removeAllKey } from "@/utils/sessionInteraction";
+import { LightNotification } from "../UI/LightNotification";
+import { ChatBoxes } from "../chat/ChatBoxes";
 const QUERY_CHECK_USER = gql`
   query checkToken($input: String!) {
     CheckJwtToken(token: $input) {
@@ -18,6 +20,7 @@ const QUERY_CHECK_USER = gql`
   }
 `;
 export function Layout(props: PropsWithChildren) {
+  const lightNotification = useAppSelector((state) => state.lightNotification);
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (typeof window !== undefined && getJwtToken())
@@ -60,6 +63,15 @@ export function Layout(props: PropsWithChildren) {
     >
       <Main>{props.children}</Main>
       <GoUp />
+      <AnimatePresence mode="wait">
+        {lightNotification.status && (
+          <LightNotification
+            state={lightNotification.status}
+            title={lightNotification.title}
+          />
+        )}
+        <ChatBoxes />
+      </AnimatePresence>
     </motion.div>
   );
 }

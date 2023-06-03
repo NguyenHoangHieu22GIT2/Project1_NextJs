@@ -114,7 +114,6 @@ export const Register: React.FC<props> = (props) => {
     }
   }
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-  console.log(file);
   return (
     <form onSubmit={submit} method="post" className="[&>*]:mb-10 gap-10">
       <Input label="Email" type="email" input={emailInput} />

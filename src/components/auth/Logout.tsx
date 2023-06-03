@@ -8,7 +8,7 @@ export function Logout() {
   const route = useRouter();
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(authActions.logout({}));
+    dispatch(authActions.logout());
     sessionStorage.removeItem("token");
     route.replace("/");
   });

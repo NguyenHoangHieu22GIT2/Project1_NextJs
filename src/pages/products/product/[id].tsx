@@ -20,6 +20,18 @@ const QUERY_ONE_PRODUCT = gql`
       images
       discount
       stock
+      hasSold
+      ratings {
+        userId
+        stars
+      }
+      userId
+      user {
+        _id
+        email
+        avatar
+        username
+      }
     }
   }
 `;
@@ -85,12 +97,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (error: any) {
     console.log("error");
     props = {
-      notFound: false,
+      notFound: true,
     };
   }
   if (props.notFound) {
     return {
-      notFound: false,
+      notFound: true,
     };
   }
   return {

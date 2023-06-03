@@ -16,9 +16,13 @@ import { useEffect } from "react";
 import { authActions } from "@/store/auth";
 import { ErrorBoundary } from "@/components/Layout/ErrorBoundary";
 import createUploadLink from "apollo-upload-client/public/createUploadLink.js";
+import { LightNotification } from "@/components/UI/LightNotification";
+import { io } from "socket.io-client";
+
+export const socket = io("http://localhost:4000").connect();
 
 export const client = new ApolloClient({
-  link: createUploadLink({uri:process.env.NEXT_PUBLIC_SERVER_URI}),
+  link: createUploadLink({ uri: process.env.NEXT_PUBLIC_SERVER_URI }),
   cache: new InMemoryCache(),
 });
 

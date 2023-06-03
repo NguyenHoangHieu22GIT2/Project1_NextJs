@@ -24,7 +24,6 @@ export function Product(props: props) {
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
   }
-  console.log(props);
   return (
     <Link
       href={`/products/product/${props._id}`}

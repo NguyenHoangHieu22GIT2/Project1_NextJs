@@ -8,7 +8,7 @@ export function GoUp() {
   return (
     <div
       onClick={scrollToTop}
-      className="fixed right-0  bottom-0 m-5 cursor-pointer animate-bounce"
+      className="fixed left-0  bottom-0 m-5 cursor-pointer animate-bounce"
     >
       <Image
         src={goUp}

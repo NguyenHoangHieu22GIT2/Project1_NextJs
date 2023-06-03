@@ -5,7 +5,12 @@ import { Button } from "../UI/Button";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { LoadingSpinner } from "../UI/Loading";
 import { Product } from "@/types/Product";
-import { useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { Star } from "../UI/SVG/Star";
+import { lightNotificationActions } from "@/store/lightNotification";
+import { socket } from "@/pages/_app";
+import { chatboxActions } from "@/store/chatbox";
+import { User } from "@/types/User.Schema";
 type props = {
   product: Product;
   csrfToken: string;
@@ -19,9 +24,19 @@ const MUTATION_ADD_TO_CART = gql`
   }
 `;
 export const ReadMore: React.FC<props> = (props) => {
-  const authToken = useAppSelector((state) => {
-    return state.auth.token;
+  const dispatch = useAppDispatch();
+  const auth = useAppSelector((state) => {
+    return state.auth;
   });
+  let totalStars = 0;
+  let ratingsLength = 0;
+  props.product.ratings.map((rating) => {
+    totalStars += +rating.stars;
+    ratingsLength++;
+  });
+  if (totalStars > 0 && ratingsLength > 0)
+    totalStars = totalStars / ratingsLength;
+
   const [imageTargeted, setImageTargeted] = useState<number>(0);
   const [product, setProduct] = useState<Product>();
   const [quantity, setQuantity] = useState(0);
@@ -30,21 +45,62 @@ export const ReadMore: React.FC<props> = (props) => {
   useEffect(() => {
     setProduct(props.product);
   }, [props.product]);
-  function submit(e: FormEvent<HTMLFormElement>) {
+
+  useEffect(() => {
+    socket.on("sendRoom", (data) => {
+      let thatUser = data.users.filter((user: User) => {
+        console.log(user._id);
+        console.log(auth.userId);
+        console.log(user._id.toString() !== auth.userId.toString());
+        return user._id.toString() !== auth.userId.toString();
+      });
+      console.log(thatUser);
+      dispatch(
+        chatboxActions.joinRoom({
+          history: data.history,
+          roomId: data.roomId,
+          user: thatUser[0],
+        })
+      );
+    });
+  }, [socket]);
+  async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (quantity > 0 && product) {
-      addToCartFn({
+      const result = await addToCartFn({
         variables: {
-          input: { token: props.csrfToken, productId: product._id },
+          input: { productId: product._id, quantity },
         },
         context: {
           headers: {
-            authorization: `bearer ${authToken}`,
+            authorization: `bearer ${auth.token}`,
           },
         },
       });
+      if (result.data) {
+        console.log("Light Notification changed");
+        dispatch(
+          lightNotificationActions.createNotification({
+            status: "success",
+            title: "Added successfully",
+          })
+        );
+      }
     }
   }
+  function joinRoom() {
+    if (!auth.userId) {
+      dispatch(
+        lightNotificationActions.createNotification({
+          status: "error",
+          title: "You have to login first!!!",
+        })
+      );
+      return;
+    }
+    socket.emit("joinRoom", [props.product.userId, auth.userId]);
+  }
+
   let pageContent = <LoadingSpinner />;
   if (product) {
     pageContent = (
@@ -84,98 +140,30 @@ export const ReadMore: React.FC<props> = (props) => {
             })}
           </div>
         </div>
-        <form
-          onSubmit={submit}
-          className="col-span-12 xl:col-span-6 lex flex-col justify-between"
-        >
+        <div className="col-span-12 xl:col-span-6 lex flex-col justify-between">
           <h1 className=" font-bold text-xl xl:text-2xl">{product.title}</h1>
           <div className="flex gap-2">
             <div>
               <h6 className="text-[#ee4d2d] inline-block relative before:content-[''] before:w-full before:h-[1px] before:bg-[#ee4d2d] before:absolute before:bottom-0 before:left-0">
-                4.7
+                {totalStars}
               </h6>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="#ee4d2d"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="#ee4d2d"
-                className="w-6 h-6 inline-block"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                />
-              </svg>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="#ee4d2d"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="#ee4d2d"
-                className="w-6 h-6 inline-block"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                />
-              </svg>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="#ee4d2d"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="#ee4d2d"
-                className="w-6 h-6 inline-block"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                />
-              </svg>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="#ee4d2d"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="#ee4d2d"
-                className="w-6 h-6 inline-block"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                />
-              </svg>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="#ee4d2d"
-                className="w-6 h-6 inline-block"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
-                />
-              </svg>
+              <Star isFilled={totalStars >= 1 ? true : false} />
+              <Star isFilled={totalStars >= 2 ? true : false} />
+              <Star isFilled={totalStars >= 3 ? true : false} />
+              <Star isFilled={totalStars >= 4 ? true : false} />
+              <Star isFilled={totalStars >= 5 ? true : false} />
             </div>
             <span className="text-gray-500/80">|</span>
             <div>
               <span className="relative before:content-[''] before:w-full before:h-[1px] before:bg-[#000] before:absolute before:bottom-0 before:left-0">
-                2,2k
+                {props.product.ratings.length}
               </span>
               &nbsp;
               <span>Ratings</span>
             </div>
             <span className="text-gray-500/80">|</span>
             <div>
-              <span>6,7k</span>
+              <span>{props.product.hasSold}</span>
               &nbsp;
               <span>Buys</span>
             </div>
@@ -188,7 +176,7 @@ export const ReadMore: React.FC<props> = (props) => {
             <p className="text-3xl text-[#ee4d2d]">
               <span className="text-sm">$</span>
               {product.discount > 0
-                ? (+product.price * +product.discount) / 100
+                ? product.price - +product.price * (+product.discount / 100)
                 : product.price}
             </p>
             <p className="bg-[#ee4d2d] text-white px-4 py-2">
@@ -209,7 +197,7 @@ export const ReadMore: React.FC<props> = (props) => {
             </div>
           </div>
           <p className="col-span-12 text-gray-700">{product.description}</p>
-          <div className="py-5">
+          <form onSubmit={submit} className="py-5">
             <label className="block" htmlFor="quantity">
               quantity:
             </label>
@@ -217,11 +205,32 @@ export const ReadMore: React.FC<props> = (props) => {
               onChange={(e) => setQuantity(+e.target.value)}
               value={quantity}
               type="number"
-              className="outline-none border-2 w-full border-slate-900  px-2 py-1"
+              className="outline-none border-2  w-full border-slate-900  px-2 py-1"
             />
+            <Button classNames="col-span-12">Add To Cart</Button>
+          </form>
+        </div>
+        <div className="col-span-12 shadow-2xl items-center px-5 py-2 flex w-full justify-between">
+          <div className="flex items-center gap-5">
+            <Image
+              src={
+                process.env.NEXT_PUBLIC_SERVER_IMAGE_URI +
+                props.product.user.avatar
+              }
+              width={50}
+              height={50}
+              alt="Shop's avatar"
+              className="aspect-square  object-cover rounded-full"
+            />
+            <h1>{props.product.user.username}</h1>
           </div>
-          <Button classNames="col-span-12">Add To Cart</Button>
-        </form>
+          <div>3 Products</div>
+          {auth.userId !== props.product.userId && (
+            <div>
+              <Button onClick={joinRoom}>Chat</Button>
+            </div>
+          )}
+        </div>
       </div>
     );
   }

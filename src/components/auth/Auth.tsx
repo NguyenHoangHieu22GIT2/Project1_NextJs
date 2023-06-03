@@ -63,14 +63,14 @@ export function Auth(props: props) {
           description: "asd",
         })
       );
+    } else {
+      dispatch(notificationActions.deleteNotification({}));
     }
   }
 
   function doesHaveToken(token: string) {
-    console.log(token);
     setMessage(token);
   }
-
   return (
     <section className="py-5">
       <SystemUI>
@@ -84,7 +84,7 @@ export function Auth(props: props) {
             }
           }}
         >
-          {!message && (
+          {message && (
             <form onSubmit={submitToken} action="">
               <h1>Enter the token:</h1>
               <input
