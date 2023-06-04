@@ -4,7 +4,7 @@ import { Montserrat, Outfit } from "next/font/google";
 import { ReactElement, useState } from "react";
 import Popup from "../UI/Popup";
 import { useRouter } from "next/router";
-import { useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
 import { AnimatePresence } from "framer-motion";
 import { Modal } from "../UI/Modal";
 import Card from "../UI/Card";
@@ -12,7 +12,10 @@ import Image from "next/image";
 import { ApolloError, gql, useQuery } from "@apollo/client";
 import { LoadingSpinner } from "../UI/Loading";
 import { Product } from "@/types/Product";
-import { JsxElement } from "typescript";
+import { motion } from "framer-motion";
+import { lightNotificationActions } from "@/store/lightNotification";
+import { socket } from "@/pages/_app";
+import { User } from "@/types/User.Schema";
 const outfit = Outfit({ subsets: ["latin"] });
 
 const montserrat = Montserrat({ subsets: ["latin"] });
@@ -29,17 +32,44 @@ const QUERY_CART_ITEMS = gql`
     }
   }
 `;
+const QUERY_ALL_USERS_MESSAGES = gql`
+  {
+    getAllMessages {
+      _id
+      username
+      avatar
+    }
+  }
+`;
 
 type responseCartItems = {
   getCartItems: Product[];
 };
 
 function Header() {
+  const dispatch = useAppDispatch();
+  const auth = useAppSelector((state) => state.auth);
   const authStore = useAppSelector((state) => state.auth);
   const [openNav, setOpenNav] = useState<boolean>(false);
   const [openCart, setOpenCart] = useState<boolean>(false);
+  const [openMessage, setOpenMessage] = useState<boolean>(false);
   const route = useRouter();
-  const { data, loading, error } = useQuery(QUERY_CART_ITEMS, {
+  const {
+    data: dataUserMessages,
+    loading: loadingUserMessages,
+    error: errorUserMessages,
+  } = useQuery(QUERY_ALL_USERS_MESSAGES, {
+    context: {
+      headers: {
+        authorization: `bearer ${auth.token}`,
+      },
+    },
+  });
+  const {
+    data: dataCartItems,
+    loading: loadingCartItems,
+    error: errorLoadingCartItems,
+  } = useQuery(QUERY_CART_ITEMS, {
     context: {
       headers: {
         authorization: `bearer ${authStore.token}`,
@@ -47,8 +77,8 @@ function Header() {
     },
   });
   let cartItemElements: ReactElement | ReactElement[] = <LoadingSpinner />;
-  if (data) {
-    const cartItems = data.getCartItems as Product[];
+  if (dataCartItems) {
+    const cartItems = dataCartItems.getCartItems as Product[];
     cartItemElements = cartItems.map((cartItem) => (
       <li className="flex justify-between" key={cartItem._id}>
         <div>
@@ -76,10 +106,23 @@ function Header() {
   function toggleOpenCart() {
     setOpenCart(!openCart);
   }
+  function joinRoom(otherUserId: string) {
+    console.log(otherUserId);
+    if (!auth.userId) {
+      dispatch(
+        lightNotificationActions.createNotification({
+          status: "error",
+          title: "You have to login first!!!",
+        })
+      );
+      return;
+    }
+    socket.emit("joinRoomLite", [otherUserId, auth.userId]);
+  }
   return (
-    <header className="text-gray-900 sticky top-0  w-full z-10 backdrop-blur-sm font-primary py-5 shadow-lg ">
+    <header className="text-gray-900 sticky top-0  w-full z-10 backdrop-blur-sm font-primary shadow-lg ">
       <SystemUI>
-        <div className="flex w-full col-span-12 justify-between">
+        <div className="flex w-full col-span-12 items-center justify-between">
           <h1
             className={` whitespace-nowrap text-2xl xl:text-3xl font-bold ${outfit.className} `}
           >
@@ -213,7 +256,7 @@ function Header() {
           {/* For Computer */}
           <nav className=" hidden xl:flex xl:gap-5 justify-center items-center  ">
             <ul
-              className={`${montserrat.className} flex gap-9  text-gray-900 text-lg font-bold justify-between`}
+              className={`${montserrat.className} flex gap-9 [&>li]:py-5  text-gray-900 text-lg font-bold justify-between`}
             >
               <li className="hover:text-primary transition ">
                 <Link
@@ -248,8 +291,55 @@ function Header() {
                       Create Products
                     </Link>
                   </li>
-                  <li className="hover:text-primary transition ">
-                    <button>Messages</button>
+                  <li className="hover:text-primary relative transition ">
+                    <button onMouseEnter={() => setOpenMessage(!openMessage)}>
+                      Messages
+                    </button>
+                    <AnimatePresence mode="wait">
+                      {openMessage && (
+                        <motion.ul
+                          initial={{ opacity: 0, y: 100 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 100 }}
+                          className="absolute flex flex-col w-fit text-black bg-slate-100 shadow-2xl p-5 top-full left-0"
+                        >
+                          {dataUserMessages.getAllMessages.map((user: User) => {
+                            return (
+                              <li key={user._id} className="">
+                                <button
+                                  className="flex cursor-pointer items-center gap-5 w-full"
+                                  onClick={joinRoom.bind(null, user._id)}
+                                >
+                                  <div className="w-12">
+                                    <Image
+                                      width={50}
+                                      height={50}
+                                      className="rounded-full aspect-square object-cover"
+                                      src={
+                                        process.env
+                                          .NEXT_PUBLIC_SERVER_IMAGE_URI +
+                                        user.avatar
+                                      }
+                                      alt={user.username}
+                                    ></Image>
+                                  </div>
+                                  <div>{user.username}</div>
+                                </button>
+                              </li>
+                            );
+                          })}
+                          <li>
+                            <Link
+                              href="/messages"
+                              className="text-left text-sm"
+                            >
+                              All messages...
+                            </Link>
+                          </li>
+                        </motion.ul>
+                      )}
+                    </AnimatePresence>
+
                     {/* <Link
                       href="/messages"
                       className={`inline-block   ${

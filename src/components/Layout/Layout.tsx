@@ -4,11 +4,13 @@ import { Main } from "./Main";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { ApolloError, gql } from "@apollo/client";
-import { client } from "@/pages/_app";
+import { client, socket } from "@/pages/_app";
 import { authActions } from "@/store/auth";
 import { getJwtToken, removeAllKey } from "@/utils/sessionInteraction";
 import { LightNotification } from "../UI/LightNotification";
 import { ChatBoxes } from "../chat/ChatBoxes";
+import { User } from "@/types/User.Schema";
+import { chatboxActions } from "@/store/chatbox";
 const QUERY_CHECK_USER = gql`
   query checkToken($input: String!) {
     CheckJwtToken(token: $input) {
@@ -21,7 +23,22 @@ const QUERY_CHECK_USER = gql`
 `;
 export function Layout(props: PropsWithChildren) {
   const lightNotification = useAppSelector((state) => state.lightNotification);
+  const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  useEffect(() => {
+    socket.on("sendRoomLite", (data) => {
+      let thatUser = data.users.filter((user: User) => {
+        return user._id.toString() !== auth.userId.toString();
+      });
+      dispatch(
+        chatboxActions.joinRoom({
+          history: data.history,
+          roomId: data.roomId,
+          user: thatUser[0],
+        })
+      );
+    });
+  }, [socket]);
   useEffect(() => {
     if (typeof window !== undefined && getJwtToken())
       client

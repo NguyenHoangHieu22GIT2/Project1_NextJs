@@ -4,4 +4,5 @@ export interface User {
   username: string;
   avatar: string;
   cart: { items: [{ productId: string; quantity: number }] };
+  isOnline: boolean;
 }

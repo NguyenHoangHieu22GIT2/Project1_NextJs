@@ -16,7 +16,6 @@ type props = {
   history: message[];
 };
 export function ChatBox(props: props) {
-  console.log(props.history);
   const dispatch = useAppDispatch();
   const [history, setHistory] = useState<message[]>([]);
   const chatInput = useInput((data) => data.trim().length > 0);

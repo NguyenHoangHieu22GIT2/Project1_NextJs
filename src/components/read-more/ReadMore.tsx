@@ -46,24 +46,6 @@ export const ReadMore: React.FC<props> = (props) => {
     setProduct(props.product);
   }, [props.product]);
 
-  useEffect(() => {
-    socket.on("sendRoom", (data) => {
-      let thatUser = data.users.filter((user: User) => {
-        console.log(user._id);
-        console.log(auth.userId);
-        console.log(user._id.toString() !== auth.userId.toString());
-        return user._id.toString() !== auth.userId.toString();
-      });
-      console.log(thatUser);
-      dispatch(
-        chatboxActions.joinRoom({
-          history: data.history,
-          roomId: data.roomId,
-          user: thatUser[0],
-        })
-      );
-    });
-  }, [socket]);
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (quantity > 0 && product) {
@@ -98,7 +80,7 @@ export const ReadMore: React.FC<props> = (props) => {
       );
       return;
     }
-    socket.emit("joinRoom", [props.product.userId, auth.userId]);
+    socket.emit("joinRoomLite", [props.product.userId, auth.userId]);
   }
 
   let pageContent = <LoadingSpinner />;
