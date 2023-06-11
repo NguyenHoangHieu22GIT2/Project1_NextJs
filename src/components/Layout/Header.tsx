@@ -117,7 +117,10 @@ function Header() {
       );
       return;
     }
-    socket.emit("joinRoomLite", [otherUserId, auth.userId]);
+    socket.emit("joinRoomLite", {
+      users: [otherUserId, auth.userId],
+      joinerId: auth.userId,
+    });
   }
   return (
     <header className="text-gray-900 sticky top-0  w-full z-10 backdrop-blur-sm font-primary shadow-lg ">
@@ -231,6 +234,31 @@ function Header() {
                             Create Products
                           </Link>
                         </li>
+                        <li className="hover:text-primary transition ">
+                          <Link
+                            href="/messages"
+                            className={`inline-block   ${
+                              route.pathname == "/create-product" &&
+                              "text-primary font-bold"
+                            }`}
+                          >
+                            Messages
+                          </Link>
+                        </li>
+                        <li className="hover:text-primary transition ">
+                          <Link href={`/user/${auth.userId}`}>
+                            <Image
+                              className="rounded-full object-cover aspect-square"
+                              src={
+                                process.env.NEXT_PUBLIC_SERVER_IMAGE_URI +
+                                authStore.avatar
+                              }
+                              width={50}
+                              height={50}
+                              alt="user avatar"
+                            />
+                          </Link>
+                        </li>
                       </>
                     )}
                     <li className="hover:text-primary transition ">
@@ -292,7 +320,7 @@ function Header() {
                     </Link>
                   </li>
                   <li className="hover:text-primary relative transition ">
-                    <button onMouseEnter={() => setOpenMessage(!openMessage)}>
+                    <button onClick={() => setOpenMessage(!openMessage)}>
                       Messages
                     </button>
                     <AnimatePresence mode="wait">
@@ -368,15 +396,17 @@ function Header() {
               </li>
             </ul>
             {authStore.token && (
-              <Image
-                className="rounded-full object-cover aspect-square"
-                src={
-                  process.env.NEXT_PUBLIC_SERVER_IMAGE_URI + authStore.avatar
-                }
-                width={50}
-                height={50}
-                alt="user avatar"
-              />
+              <Link href={`/user/${auth.userId}`}>
+                <Image
+                  className="rounded-full object-cover aspect-square"
+                  src={
+                    process.env.NEXT_PUBLIC_SERVER_IMAGE_URI + authStore.avatar
+                  }
+                  width={50}
+                  height={50}
+                  alt="user avatar"
+                />
+              </Link>
             )}
           </nav>
         </div>

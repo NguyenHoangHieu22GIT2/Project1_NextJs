@@ -11,6 +11,7 @@ import { LightNotification } from "../UI/LightNotification";
 import { ChatBoxes } from "../chat/ChatBoxes";
 import { User } from "@/types/User.Schema";
 import { chatboxActions } from "@/store/chatbox";
+import { lightNotificationActions } from "@/store/lightNotification";
 const QUERY_CHECK_USER = gql`
   query checkToken($input: String!) {
     CheckJwtToken(token: $input) {
@@ -26,7 +27,22 @@ export function Layout(props: PropsWithChildren) {
   const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   useEffect(() => {
+    if (auth.token) {
+      socket.connect();
+    }
     socket.on("sendRoomLite", (data) => {
+      console.log(data);
+      // if (
+      //   data.notification.userId &&
+      //   data.notification.userId.toString() === auth.userId.toString()
+      // ) {
+      //   dispatch(
+      //     lightNotificationActions.createNotification({
+      //       status: "messages",
+      //       title: "You receivied a message",
+      //     })
+      //   );
+      // }
       let thatUser = data.users.filter((user: User) => {
         return user._id.toString() !== auth.userId.toString();
       });
@@ -83,6 +99,7 @@ export function Layout(props: PropsWithChildren) {
       <AnimatePresence mode="wait">
         {lightNotification.status && (
           <LightNotification
+            key={Math.random()}
             state={lightNotification.status}
             title={lightNotification.title}
           />

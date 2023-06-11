@@ -26,24 +26,20 @@ export function Products({ loading, data, valueToFind, error }: props) {
     );
   }
   return (
-    <section className="py-5 xl:py-12">
-      <SystemUI>
-        <div className=" col-span-12  grid gap-3  grid-cols-12">
-          {products.map((product) => {
-            return (
-              <ProductSmall
-                key={product._id}
-                _id={product._id}
-                title={product.title}
-                price={product.price}
-                description={product.description}
-                images={product.images}
-                userImage={user1}
-              />
-            );
-          })}
-        </div>
-      </SystemUI>
-    </section>
+    <div className=" col-span-12  grid gap-3  grid-cols-12">
+      {products.map((product) => {
+        return (
+          <ProductSmall
+            key={product._id}
+            _id={product._id}
+            title={product.title}
+            price={product.price}
+            description={product.description}
+            images={product.images}
+            userImage={user1}
+          />
+        );
+      })}
+    </div>
   );
 }

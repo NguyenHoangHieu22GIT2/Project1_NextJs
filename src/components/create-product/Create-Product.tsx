@@ -13,6 +13,7 @@ import { Stream } from "stream";
 import Dropzone, { useDropzone } from "react-dropzone";
 import { toBase64 } from "@/utils/toBase64";
 import Image from "next/image";
+import axios from "axios";
 
 type props = {
   token: string;
@@ -97,6 +98,16 @@ export function CreateProduct(props: props) {
     if (!formIsValid && files && files.length <= 0) {
       return;
     }
+    // const formData = new FormData();
+    // for (let i = 0; i < files.length; i++) {
+    //   formData.append(`files`, files[i]);
+    // }
+
+    // await fetch("http://localhost:4000/uploadFile", {
+    //   method: "POST",
+    //   body: formData,
+    // });
+    // await fetch("http://localhost:4000/test").then((data) => console.log(data));
     try {
       const images = files?.map(async (file) => {
         return {
@@ -148,6 +159,17 @@ export function CreateProduct(props: props) {
             "Content-Type": "application/json",
           },
         });
+        // const formData = new FormData();
+        // for (let i = 0; i < files.length; i++) {
+        //   formData.append(`file${i}}`, files[i]);
+        // }
+        // await fetch("http://localhost:4000/uploadFile", {
+        //   method: "POST",
+        //   body: formData,
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        // });
         dispatch(
           notificationActions.createNotification({
             status: "success",
@@ -204,7 +226,7 @@ export function CreateProduct(props: props) {
               {...getRootProps()}
               className="border-b-2 border-b-[#43cea6] py-3"
             >
-              <input {...getInputProps()} />
+              <input name="file0" {...getInputProps()} />
               {isDragActive ? (
                 <p>Drop the files here ...</p>
               ) : (

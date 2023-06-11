@@ -70,7 +70,6 @@ const ProductPage: React.FC<props> = (props) => {
   );
 };
 export default ProductPage;
-//@ts-ignore
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let props;
   try {

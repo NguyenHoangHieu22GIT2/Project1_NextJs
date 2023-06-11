@@ -52,9 +52,10 @@ export const Login: React.FC<props> = (props) => {
           variables: {
             input: { email: emailInput.value, password: passwordInput.value },
           },
+          fetchPolicy: "no-cache",
         })
         .then((result) => {
-          // console.log(result);
+          console.log(result.data);
           if (result.data && result.data.login.message) {
             // console.log(result.data);
             props.onHaveToken(result.data.login.message);
@@ -66,6 +67,7 @@ export const Login: React.FC<props> = (props) => {
               })
             );
           } else if (result.data && result.data.login.access_token) {
+            props.onHaveToken("");
             sessionStorage.setItem("token", result.data.login.access_token);
             sessionStorage.setItem("userId", result.data.login.userId);
             dispatch(

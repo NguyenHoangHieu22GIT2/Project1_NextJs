@@ -105,7 +105,7 @@ export function Comment(props: props) {
   }, [data]);
   const titleInput = useInput((data) => data.length > 10);
   const textAreaInput = useInput((data) => data.length > 20);
-  const authStore = useAppSelector((state) => state.auth);
+  const auth = useAppSelector((state) => state.auth);
   const [text, setText] = useState("");
   const [addRatingFn] = useMutation(MUTATION_ADD_RATING);
   const [stars, setStars] = useState(0);
@@ -115,8 +115,14 @@ export function Comment(props: props) {
   }
   let ratings: any = <LoadingSpinner />;
   async function downvote(productId: string, ratingId: string) {
-    if (!authStore.token) {
-      //TODO: Router.push to login later with a notification saying Have to sign in first
+    if (!auth.userId) {
+      dispatch(
+        lightNotificationActions.createNotification({
+          status: "error",
+          title: "You have to login first!!!",
+        })
+      );
+      return;
     } else {
       const result = await toggleDownvoteFn({
         variables: {
@@ -127,7 +133,7 @@ export function Comment(props: props) {
         },
         context: {
           headers: {
-            authorization: `bearer ${authStore.token}`,
+            authorization: `bearer ${auth.token}`,
           },
         },
       });
@@ -151,8 +157,14 @@ export function Comment(props: props) {
   }
 
   async function upvote(productId: string, ratingId: string) {
-    if (!authStore.token) {
-      //TODO: Router.push to login later with a notification saying Have to sign in first
+    if (!auth.userId) {
+      dispatch(
+        lightNotificationActions.createNotification({
+          status: "error",
+          title: "You have to login first!!!",
+        })
+      );
+      return;
     } else {
       const result = await toggleUpvoteFn({
         variables: {
@@ -163,7 +175,7 @@ export function Comment(props: props) {
         },
         context: {
           headers: {
-            authorization: `bearer ${authStore.token}`,
+            authorization: `bearer ${auth.token}`,
           },
         },
       });
@@ -232,22 +244,35 @@ export function Comment(props: props) {
   }
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (commentRef.current && commentRef.current.value.length > 10) {
+    if (!auth.userId) {
+      dispatch(
+        lightNotificationActions.createNotification({
+          status: "error",
+          title: "You have to login first!!!",
+        })
+      );
+      return;
+    }
+    if (
+      titleInput.value.trim().length > 5 &&
+      textAreaInput.value.trim().length > 10
+    ) {
       const result = await addRatingFn({
         variables: {
           input: {
             title: titleInput.value,
             productId: props.productId,
-            rating: text,
+            rating: textAreaInput.value,
             stars,
           },
         },
         context: {
           headers: {
-            authorization: `bearer ${authStore.token}`,
+            authorization: `bearer ${auth.token}`,
           },
         },
       });
+      console.log(result);
       if (result.data) {
         setRatingComments((prevArray) => [result.data.AddRating, ...prevArray]);
         dispatch(
@@ -275,7 +300,7 @@ export function Comment(props: props) {
                 label="Comment"
                 // className="w-full outline-none px-2 py-2 border-2 border-[#ee4d2d] rounded-lg"
               />
-              <Button>Comment</Button>
+              <Button>Comment!</Button>
             </div>
           </div>
           <div className="[&>*]:block">

@@ -80,7 +80,10 @@ export const ReadMore: React.FC<props> = (props) => {
       );
       return;
     }
-    socket.emit("joinRoomLite", [props.product.userId, auth.userId]);
+    socket.emit("joinRoomLite", {
+      users: [props.product.userId, auth.userId],
+      joinerId: auth.userId,
+    });
   }
 
   let pageContent = <LoadingSpinner />;

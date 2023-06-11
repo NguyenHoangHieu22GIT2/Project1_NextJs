@@ -8,7 +8,7 @@ import {
   gql,
 } from "@apollo/client";
 import { Provider } from "react-redux";
-import store, { useAppDispatch } from "@/store";
+import store, { useAppDispatch, useAppSelector } from "@/store";
 import { AnimatePresence } from "framer-motion";
 import Header from "@/components/Layout/Header";
 import { Footer } from "@/components/Layout/Footer";
@@ -18,6 +18,7 @@ import { ErrorBoundary } from "@/components/Layout/ErrorBoundary";
 import createUploadLink from "apollo-upload-client/public/createUploadLink.js";
 import { LightNotification } from "@/components/UI/LightNotification";
 import { Socket, io } from "socket.io-client";
+import { ChatBoxes } from "@/components/chat/ChatBoxes";
 
 let socket: Socket;
 
@@ -35,7 +36,7 @@ export const client = new ApolloClient({
 });
 
 export default function App({ Component, pageProps, router }: AppProps) {
-  console.log("Hello ba");
+  // const lightNotification = useAppSelector((state) => state.lightNotification);
   return (
     <Provider store={store}>
       <ApolloProvider client={client}>
@@ -47,6 +48,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
           >
             <Component {...pageProps} key={router.asPath} />
           </AnimatePresence>
+
           <Footer />
         </ErrorBoundary>
       </ApolloProvider>

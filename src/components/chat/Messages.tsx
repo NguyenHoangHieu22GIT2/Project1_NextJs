@@ -13,12 +13,17 @@ type props = {
 };
 
 export function Messages(props: props) {
+ navigator.mediaDevices.getUserMedia({}) 
   const chatInput = useInput((data) => data.trim().length > 0);
   async function sendMessage() {
     socket.emit("sendMessage", {
       message: chatInput.value,
-      sender: props.senderId,
+      senderId: props.senderId,
       date: new Date(),
+      roomId: props.roomId,
+    });
+    socket.emit("sendNotification", {
+      senderId: props.senderId,
       roomId: props.roomId,
     });
   }

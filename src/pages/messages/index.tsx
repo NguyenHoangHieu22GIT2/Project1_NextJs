@@ -29,6 +29,7 @@ export default function MessagePage() {
   const dispatch = useAppDispatch();
   useEffect(() => {
     socket.on("sendRoomFull", (data) => {
+      console.log(data);
       setRoomId(data.roomId);
       setHistory(data.history);
     });
@@ -91,10 +92,10 @@ export default function MessagePage() {
       !errorUserMessages &&
       dataUserMessages.getAllMessages[0]
     ) {
-      socket.emit("joinRoomFull", [
-        dataUserMessages.getAllMessages[0]._id,
-        auth.userId,
-      ]);
+      socket.emit("joinRoomFull", {
+        users: [dataUserMessages.getAllMessages[0]._id, auth.userId],
+        joinerId: auth.userId,
+      });
     }
     if (dataUserMessages && dataUserMessages.getAllMessages) {
       setUsers(dataUserMessages.getAllMessages);
@@ -111,7 +112,10 @@ export default function MessagePage() {
       );
       return;
     }
-    socket.emit("joinRoomFull", [userId, auth.userId]);
+    socket.emit("joinRoomFull", {
+      users: [userId, auth.userId],
+      joinerId: auth.userId,
+    });
   }
 
   return (
@@ -140,7 +144,18 @@ export default function MessagePage() {
                             alt={user.username}
                           ></Image>
                         </div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="1em"
+                          viewBox="0 0 512 512"
+                          color="green"
+                          // fill="rgb(34 197 94)"
+                          fill="red"
+                        >
+                          <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z" />
+                        </svg>
                       </button>
+
                       <div>
                         <h1 className="font-bold">{user.username}</h1>
                         <p

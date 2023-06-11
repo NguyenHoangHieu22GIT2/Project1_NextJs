@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { client } from "../_app";
 import Head from "next/head";
+import { SystemUI } from "@/components/UI/SystemUI";
 type props = {
   pageNumber: number;
   productCounts: number;
@@ -59,7 +60,15 @@ const ProductIndexPage: React.FC<props> = ({
       </Head>
       <Finder pageNumber={pageNumber} />
       <Filter />
-      <Products valueToFind={search} data={products} loading={loadProducts} />
+      <section className="py-5 xl:py-12">
+        <SystemUI>
+          <Products
+            valueToFind={search}
+            data={products}
+            loading={loadProducts}
+          />
+        </SystemUI>
+      </section>
       <Pagination
         valueToFind={search}
         firstPage={pageNumber != 1 ? 1 : 0}
@@ -77,42 +86,56 @@ const ProductIndexPage: React.FC<props> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  let props;
   let pageNumber: number = +context.query.pageNumber!;
   let search: string = "";
   if (context.query) {
     pageNumber = context.query.pageNumber ? +context.query.pageNumber : 1;
     search = context.query.search ? context.query.search.toString() : "";
   }
-  const { data: dataProducts, loading: loadProducts } = await client.query({
-    query: QUERY_ALL_PRODUCTS,
-    variables: {
-      input: {
-        limit: LIMIT,
-        skip: SKIP * (pageNumber - 1),
+  try {
+    const { data: dataProducts, loading: loadProducts } = await client.query({
+      query: QUERY_ALL_PRODUCTS,
+      variables: {
+        input: {
+          limit: LIMIT,
+          skip: SKIP * (pageNumber - 1),
+        },
       },
-    },
-  });
-  const products = dataProducts.products;
-  const { data, loading } = await client.query({
-    query: QUERY_PRODUCTS_COUNT,
-    variables: {
-      input: {
-        limit: LIMIT,
-        skip: SKIP,
+    });
+    const products = dataProducts.products;
+    const { data, loading } = await client.query({
+      query: QUERY_PRODUCTS_COUNT,
+      variables: {
+        input: {
+          limit: LIMIT,
+          skip: SKIP,
+        },
       },
-    },
-  });
-  const productCounts = data.countProducts;
-
-  return {
-    props: {
+    });
+    const productCounts = data.countProducts;
+    props = {
       pageNumber,
       productCounts,
       loading,
       search,
       products,
       loadProducts,
-    },
+    };
+  } catch (error) {
+    props = {
+      notFound: true,
+    };
+  }
+
+  if (props.notFound) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props,
   };
 };
 

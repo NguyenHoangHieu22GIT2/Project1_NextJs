@@ -30,7 +30,7 @@ export function ChatBox(props: props) {
     // roomId: string;
     socket.emit("sendMessage", {
       message: chatInput.value,
-      sender: props.senderId,
+      senderId: props.senderId,
       date: new Date(),
       roomId: props.roomId,
     });

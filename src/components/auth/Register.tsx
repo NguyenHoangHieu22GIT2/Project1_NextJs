@@ -68,7 +68,7 @@ export const Register: React.FC<props> = (props) => {
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (formValid && file) {
+    if (formValid && file) {  
       const result = await createUser({
         variables: {
           input: {
