@@ -1,4 +1,5 @@
 import { Layout } from "@/components/Layout/Layout";
+import { SystemUI } from "@/components/UI/SystemUI";
 import { Comment } from "@/components/read-more/Comment";
 import { ReadMore } from "@/components/read-more/ReadMore";
 import { RecommendedProducts } from "@/components/read-more/RecommendedProduct";
@@ -64,8 +65,15 @@ const ProductPage: React.FC<props> = (props) => {
   return (
     <Layout>
       <ReadMore csrfToken={csrfToken} product={props.product} />
-      <Comment pageRating={props.pageRating} productId={props.product._id} />
-      <RecommendedProducts products={props.productsRecommended} />
+      <SystemUI>
+        <div className="grid-cols-12 my-5 col-span-12 grid gap-10">
+          <Comment
+            pageRating={props.pageRating}
+            productId={props.product._id}
+          />
+          <RecommendedProducts products={props.productsRecommended} />
+        </div>
+      </SystemUI>
     </Layout>
   );
 };

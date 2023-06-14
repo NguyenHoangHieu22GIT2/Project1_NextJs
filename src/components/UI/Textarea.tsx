@@ -42,7 +42,7 @@ export function TextArea({ input, label, placeholder, className }: props) {
         className={`bg-transparent overflow-y-hidden ${input.className} h-fit  w-full border-b-2 outline-none peer border-primary ${invalidClassName} ${className}`}
       ></textarea>
       <label
-        className={`absolute ${labelclassNameInvalid} -z-10 left-0 -top-2  transition font-bold           text-attention origin-top-left
+        className={`absolute ${labelclassNameInvalid}  left-0 -top-2  transition font-bold hover:-translate-y-7 hover:text-primary/80 hover:scale-75      text-attention origin-top-left
          ${
            input.value.toString().length > 0
              ? "-translate-y-7 text-primary xl:block scale-75 "

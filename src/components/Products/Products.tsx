@@ -29,7 +29,7 @@ export function Products({ loading, data, valueToFind, error }: props) {
     <div className=" col-span-12  grid gap-3  grid-cols-12">
       {products.map((product) => {
         return (
-          <ProductSmall
+          <Product
             key={product._id}
             _id={product._id}
             title={product.title}

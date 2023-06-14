@@ -9,8 +9,11 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { Star } from "../UI/SVG/Star";
 import { lightNotificationActions } from "@/store/lightNotification";
 import { socket } from "@/pages/_app";
-import { chatboxActions } from "@/store/chatbox";
-import { User } from "@/types/User.Schema";
+import { moneyFormatterVn } from "@/utils/moneyFormatterVn";
+import { Minus } from "../UI/SVG/Minus";
+import { Plus } from "../UI/SVG/Plus";
+import { BackgroundContainer } from "../UI/BackgroundContainer";
+
 type props = {
   product: Product;
   csrfToken: string;
@@ -23,6 +26,13 @@ const MUTATION_ADD_TO_CART = gql`
     }
   }
 `;
+
+const QUERY_ALL_PRODUCTS_COUNT_ONE_USER = gql`
+  query findCountProducts($input: ProductFindOptions!) {
+    countProducts(productFindOptions: $input)
+  }
+`;
+
 export const ReadMore: React.FC<props> = (props) => {
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => {
@@ -45,10 +55,20 @@ export const ReadMore: React.FC<props> = (props) => {
   useEffect(() => {
     setProduct(props.product);
   }, [props.product]);
-
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (quantity > 0 && product) {
+    if (!auth.token) {
+      dispatch(
+        lightNotificationActions.createNotification({
+          status: "error",
+          title: "Something gone wrong, have you logged In?",
+        })
+      );
+    } else if (
+      quantity > 0 &&
+      product &&
+      product.userId.toString() !== auth.userId.toString()
+    ) {
       const result = await addToCartFn({
         variables: {
           input: { productId: product._id, quantity },
@@ -68,6 +88,13 @@ export const ReadMore: React.FC<props> = (props) => {
           })
         );
       }
+    } else {
+      dispatch(
+        lightNotificationActions.createNotification({
+          status: "warning",
+          title: "You can not add to your cart your own products",
+        })
+      );
     }
   }
   function joinRoom() {
@@ -85,11 +112,16 @@ export const ReadMore: React.FC<props> = (props) => {
       joinerId: auth.userId,
     });
   }
-
   let pageContent = <LoadingSpinner />;
   if (product) {
+    let formattedPrice = moneyFormatterVn.format(
+      product.discount > 0
+        ? product.price - +product.price * (+product.discount / 100)
+        : product.price
+    );
+    console.log(formattedPrice);
     pageContent = (
-      <div className="col-span-12 gap-3 grid grid-cols-12 ">
+      <BackgroundContainer className="gap-5">
         <div className="w-full aspect-square relative xl:col-span-6 col-span-12">
           <Image
             sizes="80vw"
@@ -153,22 +185,29 @@ export const ReadMore: React.FC<props> = (props) => {
               <span>Buys</span>
             </div>
           </div>
-          <div className=" bg-gray-200 mt-5 flex flex-row items-center gap-2 px-5 py-2 text-xl">
-            <p className="relative text-[#6b737f] before:content-[''] before:w-10 before:h-[2px] before:bg-[#6b737f] before:absolute before:bottom-1/2 before:left-0">
-              <span className="text-sm">$</span>
-              {product.price}
-            </p>
-            <p className="text-3xl text-[#ee4d2d]">
-              <span className="text-sm">$</span>
-              {product.discount > 0
-                ? product.price - +product.price * (+product.discount / 100)
-                : product.price}
-            </p>
-            <p className="bg-[#ee4d2d] text-white px-4 py-2">
-              {+product.discount}% off
-            </p>
+          <div className=" bg-gray-100 mt-5 flex flex-row items-center gap-2 px-5 py-2 text-xl">
+            {product.discount > 0 ? (
+              <>
+                <p className="relative text-[#6b737f] before:content-[''] before:w-10 before:h-[2px] before:bg-[#6b737f] before:absolute before:bottom-1/2 before:left-0">
+                  <span className="text-sm">$</span>
+                  {product.price}
+                </p>
+                <p className="text-3xl text-[#ee4d2d]">
+                  {/* <span className="text-sm">$</span> */}
+                  {formattedPrice}
+                </p>
+                <p className="bg-[#ee4d2d] text-white px-4 py-2">
+                  {+product.discount}% off
+                </p>
+              </>
+            ) : (
+              <p className="text-3xl text-[#ee4d2d]">
+                {/* <span className="text-sm">$</span> */}
+                {formattedPrice}
+              </p>
+            )}
           </div>
-          <div className="flex gap-10 my-5 items-center">
+          {/* <div className="flex gap-10 my-5 items-center">
             <h1>Màu Sắc</h1>
             <div>
               <ul className="flex gap-5 text-sm">
@@ -180,19 +219,50 @@ export const ReadMore: React.FC<props> = (props) => {
                 </li>
               </ul>
             </div>
-          </div>
+          </div> */}
           <p className="col-span-12 text-gray-700">{product.description}</p>
-          <form onSubmit={submit} className="py-5">
-            <label className="block" htmlFor="quantity">
-              quantity:
+          <form onSubmit={submit} className="py-5 ">
+            <label
+              htmlFor="quantity"
+              className="font-semibold block my-5 capitalize"
+            >
+              quantity
             </label>
-            <input
-              onChange={(e) => setQuantity(+e.target.value)}
-              value={quantity}
-              type="number"
-              className="outline-none border-2  w-full border-slate-900  px-2 py-1"
-            />
-            <Button classNames="col-span-12">Add To Cart</Button>
+            <div className="flex">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (quantity > 0) setQuantity(quantity - 1);
+                }}
+                className="border rounded-tl-lg rounded-bl-lg p-2"
+              >
+                <Minus />
+              </button>
+              <input
+                onChange={(e) => {
+                  if (+e.target.value <= product.stock)
+                    setQuantity(+e.target.value);
+                }}
+                value={quantity}
+                type="number"
+                className="outline-none border   w-24 text-center     p-2 "
+              />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (quantity < product.stock) setQuantity(quantity + 1);
+                }}
+                className="border  rounded-tr-lg rounded-br-lg p-2"
+              >
+                <Plus />
+              </button>
+            </div>
+            <div className="my-5 text-gray-400 italic">
+              {product.stock} in stock
+            </div>
+            <Button classNames="col-span-12 block my-5 !text-sm whitespace-nowrap">
+              Add To Cart
+            </Button>
           </form>
         </div>
         <div className="col-span-12 shadow-2xl items-center px-5 py-2 flex w-full justify-between">
@@ -216,11 +286,11 @@ export const ReadMore: React.FC<props> = (props) => {
             </div>
           )}
         </div>
-      </div>
+      </BackgroundContainer>
     );
   }
   return (
-    <section className="my-5 text-gray-900">
+    <section className="my-5  text-gray-900">
       <SystemUI>{pageContent}</SystemUI>
     </section>
   );

@@ -10,6 +10,8 @@ import { gql } from "@apollo/client";
 import { client } from "./_app";
 import { Product } from "@/types/Product";
 import Head from "next/head";
+import { Suspense } from "react";
+import LoadingHomePage from "./loading";
 
 const QUERY_ALL_PRODUCTS = gql`
   query getProducts($input: ProductFindOptions!) {
@@ -35,30 +37,44 @@ export default function Home(props: props) {
         <meta property="og:title" content="K-rose" key="title" />
       </Head>
       <Layout>
-        <Introduction />
-        <Wave />
-        <About />
-        <Wave />
-        <FeaturedProducts loading={props.loading} products={props.products} />
-        <Wave />
-        <Testimonial />
-        <Wave />
-        <Contact />
+        <Suspense fallback={<LoadingHomePage />}>
+          <Introduction />
+          <Wave />
+          <About />
+          <Wave />
+          <FeaturedProducts loading={props.loading} products={props.products} />
+          <Wave />
+          <Testimonial />
+          <Wave />
+          <Contact />
+        </Suspense>
       </Layout>
     </>
   );
 }
+//@ts-ignore
 export const getStaticProps: GetStaticProps = async (context) => {
-  const { data, loading } = await client.query({
-    query: QUERY_ALL_PRODUCTS,
-    variables: {
-      input: { skip: 0, limit: 3 },
-    },
-  });
+  let props;
+  try {
+    const { data, loading } = await client.query({
+      query: QUERY_ALL_PRODUCTS,
+      variables: {
+        input: { skip: 0, limit: 3 },
+      },
+    });
+    if (data) {
+      props = {
+        products: data.products,
+        loading,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+    props = {
+      notFound: true,
+    };
+  }
   return {
-    props: {
-      products: data.products,
-      loading,
-    },
+    props,
   };
 };

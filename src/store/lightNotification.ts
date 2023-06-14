@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 type state = {
-  status: string;
+  status:  "sucess"  | "error" | "warning" | string;
   title: string;
 };
 

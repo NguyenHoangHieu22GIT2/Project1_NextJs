@@ -7,10 +7,12 @@ import { Product } from "@/types/Product";
 import { ApolloError, gql } from "@apollo/client";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { client } from "../_app";
 import Head from "next/head";
 import { SystemUI } from "@/components/UI/SystemUI";
+import { BackgroundContainer } from "@/components/UI/BackgroundContainer";
+import LoadingPageNumber from "./loadingPageNumber";
 type props = {
   pageNumber: number;
   productCounts: number;
@@ -33,8 +35,8 @@ const QUERY_ALL_PRODUCTS = gql`
   }
 `;
 const QUERY_PRODUCTS_COUNT = gql`
-  query findCountProducts($input: ProductFindOptions!) {
-    countProducts(productFindOptions: $input)
+  query findCountProducts($input: ProductCountInput!) {
+    countProducts(productCountInput: $input)
   }
 `;
 const LIMIT = 2;
@@ -62,11 +64,15 @@ const ProductIndexPage: React.FC<props> = ({
       <Filter />
       <section className="py-5 xl:py-12">
         <SystemUI>
-          <Products
-            valueToFind={search}
-            data={products}
-            loading={loadProducts}
-          />
+          <Suspense fallback={<LoadingPageNumber />}>
+            <BackgroundContainer>
+              <Products
+                valueToFind={search}
+                data={products}
+                loading={loadProducts}
+              />
+            </BackgroundContainer>
+          </Suspense>
         </SystemUI>
       </section>
       <Pagination
@@ -106,12 +112,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const products = dataProducts.products;
     const { data, loading } = await client.query({
       query: QUERY_PRODUCTS_COUNT,
-      variables: {
-        input: {
-          limit: LIMIT,
-          skip: SKIP,
-        },
-      },
+      variables: { input: {} },
     });
     const productCounts = data.countProducts;
     props = {
@@ -123,6 +124,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       loadProducts,
     };
   } catch (error) {
+    console.log(error);
     props = {
       notFound: true,
     };

@@ -27,7 +27,7 @@ export function Input({ input, label, type }: props) {
         type={type}
       />
       <label
-        className={`absolute ${labelclassNameInvalid} -z-10 left-0 -top-2  transition font-bold text-attention origin-top-left
+        className={`absolute ${labelclassNameInvalid}  left-0 -top-2  transition font-bold text-attention origin-top-left hover:-translate-y-7 hover:text-primary/80 hover:scale-75 
          ${
            input.value.toString().length > 0
              ? "-translate-y-7 text-primary xl:block scale-75 "

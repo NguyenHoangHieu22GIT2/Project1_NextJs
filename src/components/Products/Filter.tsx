@@ -1,5 +1,6 @@
 import { PropsWithChildren, useState } from "react";
 import { SystemUI } from "../UI/SystemUI";
+import { BackgroundContainer } from "../UI/BackgroundContainer";
 
 const categories = ["Technology", "Clothes", "Games", "Misc"];
 
@@ -56,10 +57,11 @@ export function Filter(props: PropsWithChildren) {
   return (
     <section className="text-gray-700">
       <SystemUI>
-        <h1 className="text-attention font-bold relative col-span-3 xl:col-span-2 text-center   before:content-[''] before:w-full before:h-1 before:bg-slate-200 before:absolute before:bottom-0 before:left-0">
-          Filters
-        </h1>
-        {/* <div className="col-span-12 grid">
+        <BackgroundContainer>
+          <h1 className="text-attention font-bold relative col-span-3 xl:col-span-2 text-center   before:content-[''] before:w-full before:h-1 before:bg-slate-200 before:absolute before:bottom-0 before:left-0">
+            Filters
+          </h1>
+          {/* <div className="col-span-12 grid">
           <p className=" font-bold text-2xl">
             prices:
             <span className="text-white font-bold text-attention">
@@ -72,11 +74,12 @@ export function Filter(props: PropsWithChildren) {
             onChange={(e) => setValue(+e.target.value)}
           />
         </div> */}
-        <form className="col-span-12 " action="">
-          <h1 className="text-2xl font-bold">Category:</h1>
+          <form className="col-span-12 " action="">
+            <h1 className="text-2xl font-bold">Category:</h1>
 
-          {radioButtonCategories}
-        </form>
+            {radioButtonCategories}
+          </form>
+        </BackgroundContainer>
       </SystemUI>
     </section>
   );

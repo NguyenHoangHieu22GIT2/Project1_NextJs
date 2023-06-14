@@ -96,7 +96,7 @@ export function Layout(props: PropsWithChildren) {
     >
       <Main>{props.children}</Main>
       <GoUp />
-      <AnimatePresence mode="wait">
+      <AnimatePresence >
         {lightNotification.status && (
           <LightNotification
             key={Math.random()}

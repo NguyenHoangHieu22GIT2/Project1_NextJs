@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       animation: {
         runOutOfTime: "runOutOfTime 4.5s linear forwards",
+        blinking: "blinking 1s ease-in infinite",
       },
       colors: {
         primary: "#44D0A7",
@@ -27,6 +28,11 @@ module.exports = {
         runOutOfTime: {
           "0%": { width: "100%" },
           "100%": { width: "0%" },
+        },
+        blinking: {
+          "0%": { opacity: 1 },
+          "50%": { opacity: 0 },
+          "100%": { opacity: 1 },
         },
       },
     },
