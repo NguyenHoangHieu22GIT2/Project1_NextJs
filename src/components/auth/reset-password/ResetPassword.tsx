@@ -20,7 +20,6 @@ const MUTATION_CHANGE_PASSWORD = gql`
 export function ResetPassword() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  console.log(router.query.id);
   const [changePassword] = useMutation(MUTATION_CHANGE_PASSWORD);
   const tokenInput = useInput((data) => {
     return data.length > 0;

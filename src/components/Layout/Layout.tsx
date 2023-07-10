@@ -31,7 +31,6 @@ export function Layout(props: PropsWithChildren) {
       socket.connect();
     }
     socket.on("sendRoomLite", (data) => {
-      console.log(data);
       // if (
       //   data.notification.userId &&
       //   data.notification.userId.toString() === auth.userId.toString()
@@ -96,7 +95,7 @@ export function Layout(props: PropsWithChildren) {
     >
       <Main>{props.children}</Main>
       <GoUp />
-      <AnimatePresence >
+      <AnimatePresence>
         {lightNotification.status && (
           <LightNotification
             key={Math.random()}

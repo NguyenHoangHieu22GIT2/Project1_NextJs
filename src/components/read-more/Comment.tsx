@@ -322,7 +322,6 @@ export function Comment(props: props) {
           },
         },
       });
-      console.log(result);
       if (result.data) {
         setRatingComments((prevArray) => [result.data.AddRating, ...prevArray]);
         dispatch(

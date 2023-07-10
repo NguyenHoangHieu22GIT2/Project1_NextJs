@@ -3,7 +3,7 @@ import { TextArea } from "../UI/Textarea";
 import { Input } from "../UI/Input";
 import { Message } from "./Message";
 import { socket } from "@/pages/_app";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { room } from "@/types/Room";
 import { message } from "@/types/message";
 import { useAppDispatch } from "@/store";
@@ -20,14 +20,15 @@ export function ChatBox(props: props) {
   const [history, setHistory] = useState<message[]>([]);
   const chatInput = useInput((data) => data.trim().length > 0);
   function closeChatBox() {
-    console.log("Hello World");
     dispatch(chatboxActions.exitRoom({ roomId: props.roomId }));
   }
-  async function sendMessage() {
+  async function sendMessage(e: FormEvent) {
     //  message: string;
     // sender: string;
     // date: Date;
     // roomId: string;
+    e.preventDefault();
+    chatInput.changeValue("");
     socket.emit("sendMessage", {
       message: chatInput.value,
       senderId: props.senderId,
@@ -58,7 +59,6 @@ export function ChatBox(props: props) {
         <ul className="px-5 py-2 flex gap-3 flex-col items-start  ">
           {history.map((message) => {
             if (message.sender === props.senderId) {
-              console.log("I'm here");
               return (
                 <Message
                   key={message.date.toString() + Math.random().toString()}
@@ -80,12 +80,10 @@ export function ChatBox(props: props) {
           })}
         </ul>
       </div>
-      <div className="mx-5 my-2 flex ">
+      <form onSubmit={sendMessage} className="mx-5 my-2 flex ">
         <Input input={chatInput} label="" type="text" />
-        <button onClick={sendMessage} className="basis-1/4">
-          Send
-        </button>
-      </div>
+        <button className="basis-1/4">Send</button>
+      </form>
     </div>
   );
 }

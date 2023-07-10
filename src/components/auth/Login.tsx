@@ -55,7 +55,6 @@ export const Login: React.FC<props> = (props) => {
           fetchPolicy: "no-cache",
         })
         .then((result) => {
-          console.log(result.data);
           if (result.data && result.data.login.message) {
             // console.log(result.data);
             props.onHaveToken(result.data.login.message);

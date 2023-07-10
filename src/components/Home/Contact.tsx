@@ -17,7 +17,6 @@ export function Contact() {
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (formValid) {
-      console.log("NICE");
     }
   }
 

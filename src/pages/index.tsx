@@ -61,6 +61,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       variables: {
         input: { skip: 0, limit: 3 },
       },
+      fetchPolicy: "no-cache",
     });
     if (data) {
       props = {

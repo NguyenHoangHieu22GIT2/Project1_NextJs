@@ -117,7 +117,6 @@ export function CreateProduct(props: props) {
         };
       });
       const updatedImages = await Promise.all(images);
-      console.log(updatedImages);
       const imagesName = files?.map((file) => {
         return props.salt + file.name;
       });
@@ -140,7 +139,6 @@ export function CreateProduct(props: props) {
           },
         },
       });
-      console.log(result);
       if (result.errors) {
         dispatch(
           notificationActions.createNotification({

@@ -4,7 +4,7 @@ import { Message } from "./Message";
 import { Send } from "../UI/SVG/Send";
 import { socket } from "@/pages/_app";
 import { message } from "@/types/message";
-import { useEffect } from "react";
+import { FormEvent, useEffect } from "react";
 
 type props = {
   senderId: string;
@@ -15,7 +15,8 @@ type props = {
 export function Messages(props: props) {
   //  navigator.mediaDevices.getUserMedia({})
   const chatInput = useInput((data) => data.trim().length > 0);
-  async function sendMessage() {
+  async function sendMessage(e: FormEvent) {
+    e.preventDefault();
     socket.emit("sendMessage", {
       message: chatInput.value,
       senderId: props.senderId,
@@ -55,7 +56,7 @@ export function Messages(props: props) {
           })}
         </ul>
       </div>
-      <div className=" basis-1/12 flex ">
+      <form onClick={sendMessage} className=" basis-1/12 flex ">
         <input
           onChange={(e) => {
             chatInput.changeValue(e.target.value.toString());
@@ -65,13 +66,10 @@ export function Messages(props: props) {
           className={`w-full px-5 py-2 rounded-tl-lg rounded-bl-lg outline-none font-bold`}
           type={"text"}
         />
-        <button
-          onClick={sendMessage}
-          className="basis-1/12 flex justify-center items-center rounded-tr-lg rounded-br-lg bg-blue-800"
-        >
+        <button className="basis-1/12 flex justify-center items-center rounded-tr-lg rounded-br-lg bg-blue-800">
           <Send />
         </button>
-      </div>
+      </form>
     </div>
   );
 }

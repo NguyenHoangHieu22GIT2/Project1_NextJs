@@ -319,6 +319,38 @@ function Header() {
                       Create Products
                     </Link>
                   </li>
+                  <li className="hover:text-primary transition ">
+                    <Link
+                      href="/cart"
+                      className={`inline-block   ${
+                        route.pathname == "/create-product" &&
+                        "text-primary font-bold"
+                      }`}
+                    >
+                      Cart
+                    </Link>
+                  </li>
+                  <li className="hover:text-primary transition ">
+                    <Link
+                      href="/orders"
+                      className={`inline-block   ${
+                        route.pathname == "/create-product" &&
+                        "text-primary font-bold"
+                      }`}
+                    >
+                      Orders
+                    </Link>
+                  </li>
+                  <li className="hover:text-primary transition ">
+                    <Link
+                      href="/Code"
+                      className={`inline-block   ${
+                        route.pathname == "/Code" && "text-primary font-bold"
+                      }`}
+                    >
+                      Code
+                    </Link>
+                  </li>
                   <li className="hover:text-primary relative transition ">
                     <button onClick={() => setOpenMessage(!openMessage)}>
                       Messages
