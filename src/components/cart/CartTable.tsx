@@ -12,6 +12,7 @@ type props = {
 };
 
 export function CartTable(props: props) {
+  console.log(props);
   return (
     <section className="mt-5">
       <SystemUI>

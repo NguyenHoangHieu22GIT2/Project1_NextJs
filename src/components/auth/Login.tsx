@@ -100,7 +100,7 @@ export const Login: React.FC<props> = (props) => {
     }
   }
   return (
-    <form onSubmit={submit} method="post" className="[&>*]:mb-10 ">
+    <form onSubmit={submit} method="post" className="[&>*]:mb-10  ">
       <Input label="Email" type="text" input={emailInput} />
       <Input label="Password" type="password" input={passwordInput} />
       <Link

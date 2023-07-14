@@ -14,8 +14,15 @@ type props = {
   data: ProductType[];
   loading: boolean;
   error?: ApolloError | undefined;
+  isInUserPage?: boolean;
 };
-export function Products({ loading, data, valueToFind, error }: props) {
+export function Products({
+  loading,
+  data,
+  valueToFind,
+  error,
+  isInUserPage,
+}: props) {
   const [products, setProducts] = useState<ProductType[]>([]);
   useEffect(() => {
     if (data) setProducts(data);
@@ -24,6 +31,14 @@ export function Products({ loading, data, valueToFind, error }: props) {
     return (
       <h1 className="text-center text-heading font-bold text-white">Error</h1>
     );
+  }
+
+  function changeProducts(id: string) {
+    setProducts((prevArray) => {
+      return prevArray.filter((product) => {
+        return product._id.toString() !== id.toString();
+      });
+    });
   }
   return (
     <div className=" col-span-12  grid gap-3  grid-cols-12">
@@ -36,7 +51,8 @@ export function Products({ loading, data, valueToFind, error }: props) {
             price={product.price}
             description={product.description}
             images={product.images}
-            userImage={user1}
+            isInUserPage={isInUserPage}
+            changeProducts={changeProducts}
           />
         );
       })}

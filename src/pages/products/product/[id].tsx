@@ -21,7 +21,11 @@ const QUERY_ONE_PRODUCT = gql`
       images
       discount
       stock
-      hasSold
+      hasSold {
+        date
+        quantity
+        userId
+      }
       ratings {
         userId
         stars
@@ -102,7 +106,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       pageRating,
     };
   } catch (error: any) {
-    console.log("error");
+    console.log(error);
     props = {
       notFound: true,
     };

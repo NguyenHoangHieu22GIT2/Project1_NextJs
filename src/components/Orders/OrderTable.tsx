@@ -15,6 +15,8 @@ export function OrderTable(props: props) {
         <div className="col-span-12">
           {props.orders.map((order) => {
             let subTotal = 0;
+            const date = new Date(order.date);
+            console.log(date.getMonth());
             order.products.map((product) => {
               subTotal += product.price * product.quantity!;
             });
@@ -22,7 +24,10 @@ export function OrderTable(props: props) {
             return (
               <details key={order._id}>
                 <summary className="font-bold">
-                  22/07/2023 - id#{order._id}
+                  {`${date.getDate()}/${
+                    date.getMonth() + 1
+                  }/${date.getFullYear()}`}{" "}
+                  - id#{order._id}
                 </summary>
                 <div className="flex flex-col gap-5">
                   <table className="w-full text-left rounded-lg">

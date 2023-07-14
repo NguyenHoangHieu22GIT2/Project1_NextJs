@@ -3,7 +3,7 @@ import { Input } from "../UI/Input";
 import { SystemUI } from "../UI/SystemUI";
 import { Button } from "../UI/Button";
 import { TextArea } from "../UI/Textarea";
-import { gql, useLazyQuery, useMutation } from "@apollo/client";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { notificationActions } from "@/store/notification";
@@ -19,16 +19,32 @@ import Rule from "../UI/SVG/Rule";
 type props = {
   token: string;
   salt: string;
+  _id: string;
 };
 
-const MUTATION_CREATE_PRODUCT = gql`
-  mutation createProduct($input: CreateProductInput!) {
-    createProduct(createProductInput: $input) {
+const MUTATION_EDIT_PRODUCT = gql`
+  mutation updateProduct($input: UpdateProductInput!) {
+    updateProduct(updateProductInput: $input) {
       title
     }
   }
 `;
-export function CreateProduct(props: props) {
+
+const QUERY_FIND_PRODUCT_BY_ID = gql`
+  query findProductById($input: String!) {
+    findProductById(id: $input) {
+      title
+      price
+      description
+      images
+      discount
+      stock
+    }
+  }
+`;
+
+export function EditProduct(props: props) {
+  const auth = useAppSelector((state) => state.auth);
   const router = useRouter();
   const [files, setFiles] = useState<File[]>([]);
   const onDrop = useCallback(
@@ -52,19 +68,14 @@ export function CreateProduct(props: props) {
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const dispatch = useAppDispatch();
-  const [createProductFn, {}] = useMutation(MUTATION_CREATE_PRODUCT);
+  const [updateProductGraphQlFn, {}] = useMutation(MUTATION_EDIT_PRODUCT);
   const token = useAppSelector((state) => state.auth.token);
-  // const [tags, setTags] = useState<any[]>([]);
-  // const updateTagName = (index: number, newName: string) => {
-  //   const newTags = [...tags];
-  //   newTags[index].name = newName;
-  //   setTags(newTags);
-  // };
-  // const updateTagOptions = (index: number, newOptions: string[]) => {
-  //   const newTags = [...tags];
-  //   newTags[index].options = newOptions;
-  //   setTags(newTags);
-  // };
+  const { loading, data, error } = useQuery(QUERY_FIND_PRODUCT_BY_ID, {
+    variables: {
+      input: props._id,
+    },
+  });
+
   const [tagElement, setTagElement] = useState<number>(0);
   const titleInput = useInput((data) => {
     return data.length > 10;
@@ -81,34 +92,44 @@ export function CreateProduct(props: props) {
   const discountInput = useInput((data) => {
     return +data >= 0;
   });
-
+  useEffect(() => {
+    if (data) {
+      titleInput.changeValue(data.findProductById.title);
+      priceInput.changeValue(data.findProductById.price);
+      descriptionInput.changeValue(data.findProductById.description);
+      stockInput.changeValue(data.findProductById.stock);
+      discountInput.changeValue(data.findProductById.discount);
+    }
+  }, [data]);
   let formIsValid =
-    titleInput.isValid && descriptionInput.isValid && priceInput.isValid;
+    titleInput.isValid &&
+    descriptionInput.isValid &&
+    priceInput.isValid &&
+    stockInput.isValid &&
+    discountInput.isValid;
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     files?.forEach((file) => {
       if (
-        file!.type !== "jpg" &&
-        file!.type !== "jpeg" &&
-        file!.type !== "png"
+        file!.type !== "image/png" &&
+        file!.type !== "image/jpg" &&
+        file!.type !== "image/jpeg"
       ) {
+        console.log("Turns to false", file!.type);
         formIsValid = false;
       }
     });
-    if (!formIsValid && files && files.length <= 0) {
+    console.log(formIsValid);
+    console.log(titleInput.isValid);
+    console.log(descriptionInput.isValid);
+    console.log(priceInput.isValid);
+    console.log(stockInput.isValid);
+    console.log(discountInput.isValid);
+    if (!formIsValid) {
       return;
     }
-    // const formData = new FormData();
-    // for (let i = 0; i < files.length; i++) {
-    //   formData.append(`files`, files[i]);
-    // }
 
-    // await fetch("http://localhost:4000/uploadFile", {
-    //   method: "POST",
-    //   body: formData,
-    // });
-    // await fetch("http://localhost:4000/test").then((data) => console.log(data));
     try {
       const images = files?.map(async (file) => {
         return {
@@ -122,9 +143,10 @@ export function CreateProduct(props: props) {
         return props.salt + file.name;
       });
 
-      const result = await createProductFn({
+      const result = await updateProductGraphQlFn({
         variables: {
           input: {
+            _id: props._id,
             title: titleInput.value,
             price: +priceInput.value,
             description: descriptionInput.value,
@@ -211,7 +233,7 @@ export function CreateProduct(props: props) {
       <SystemUI>
         <div className="col-span-12  text-gray-800 bg-white px-5 py-3 rounded-lg shadow-lg ">
           <h1 className="text-center uppercase border-b-2 border-dotted border-b-blue-300 font-bold text-subHeading col-span-12">
-            Create Product
+            Update Product
           </h1>
           <div className="flex mt-10 [&>*]:basis-1/2 gap-5">
             <form
@@ -234,6 +256,13 @@ export function CreateProduct(props: props) {
                   <p>Drag 'n' drop some files here, or click to select files</p>
                 )}
               </div>
+              <p className="font-bold text-sm">
+                Don't put anything if you don't want to change the images.
+              </p>
+              <p className="font-bold text-sm">
+                if you do want to upload another image,please be sure to upload
+                all back because we will delete the old ones
+              </p>
               <div className="flex gap-2 flex-wrap">
                 {files.length > 0 &&
                   files.map((image, index) => {

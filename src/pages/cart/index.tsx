@@ -13,7 +13,6 @@ const QUERY_CART_ITEMS = gql`
     getCartItems {
       description
       discount
-      hasSold
       images
       price
       quantity
@@ -39,6 +38,7 @@ export default function CartPage() {
   const [createOrderGraphqlMutation, { loading, data, error }] = useMutation(
     MUTATION_CREATE_ORDER,
     {
+      variables: { input: new Date() },
       context: {
         headers: {
           authorization: `bearer ${auth.token}`,

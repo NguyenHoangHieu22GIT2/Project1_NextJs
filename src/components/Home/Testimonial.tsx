@@ -8,7 +8,7 @@ export function Testimonial() {
     <section id="testimonal" className="text-gray-700">
       <SystemUI>
         <div className="col-span-12">
-          <div className="col-span-12 flex xl:gap-5 flex-col items-center relative before:content-[''] before:absolute before:top-1/2   before:-z-10 before:-trans-y-1/2 before:left-0 before:w-full before:h-1 before:bg-primary after:content-[''] after:absolute after:top-0  after:left-1/2 after:-translate-x-1/2 after:w-[128px] after:rounded-full after:h-32 after:-z-10 after:bg-white">
+          <div className="col-span-12 flex xl:gap-5 flex-col items-center relative before:content-[''] before:absolute before:top-1/2   before:-z-10 before:-trans-y-1/2 before:left-0 before:w-full before:h-1 before:bg-primary after:content-[''] after:absolute after:top-0  after:left-1/2 after:-translate-x-1/2 after:w-[128px] after:rounded-full after:h-32 after:-z-10 after:bg-[#e2e8f0]">
             <Image
               src={user1}
               alt="user"

@@ -4,7 +4,13 @@ import { SystemUI } from "../UI/SystemUI";
 import { Like } from "../UI/SVG/Like";
 import { Dislike } from "../UI/SVG/Dislike";
 import { FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import {
+  ApolloError,
+  gql,
+  useLazyQuery,
+  useMutation,
+  useQuery,
+} from "@apollo/client";
 import { useAppDispatch, useAppSelector } from "@/store";
 import useAutosizeTextArea from "@/hooks/useAutoSizeTextArea";
 import { Input } from "../UI/Input";
@@ -307,29 +313,42 @@ export function Comment(props: props) {
       titleInput.value.trim().length > 5 &&
       textAreaInput.value.trim().length > 10
     ) {
-      const result = await addRatingFn({
-        variables: {
-          input: {
-            title: titleInput.value,
-            productId: props.productId,
-            rating: textAreaInput.value,
-            stars,
+      try {
+        const result = await addRatingFn({
+          variables: {
+            input: {
+              title: titleInput.value,
+              productId: props.productId,
+              rating: textAreaInput.value,
+              stars,
+            },
           },
-        },
-        context: {
-          headers: {
-            authorization: `bearer ${auth.token}`,
+          context: {
+            headers: {
+              authorization: `bearer ${auth.token}`,
+            },
           },
-        },
-      });
-      if (result.data) {
-        setRatingComments((prevArray) => [result.data.AddRating, ...prevArray]);
-        dispatch(
-          lightNotificationActions.createNotification({
-            status: "success",
-            title: "Added Comment",
-          })
-        );
+        });
+        if (result.data) {
+          setRatingComments((prevArray) => [
+            result.data.AddRating,
+            ...prevArray,
+          ]);
+          dispatch(
+            lightNotificationActions.createNotification({
+              status: "success",
+              title: "Added Comment",
+            })
+          );
+        }
+      } catch (error: unknown) {
+        if (error instanceof ApolloError)
+          dispatch(
+            lightNotificationActions.createNotification({
+              status: "error",
+              title: error.message,
+            })
+          );
       }
     }
   }

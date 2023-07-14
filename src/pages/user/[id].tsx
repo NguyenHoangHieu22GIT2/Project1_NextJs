@@ -7,10 +7,12 @@ import { client } from "../_app";
 import { User } from "@/types/User.Schema";
 import { UserPage } from "@/components/user/userPage";
 import { Product } from "@/types/Product";
+import { useRouter } from "next/router";
 
 const QUERY_ONE_USER = gql`
   query getUserById($input: String!) {
     userFindById(id: $input) {
+      _id
       avatar
       email
       isOnline
@@ -26,7 +28,11 @@ const QUERY_USER_PRODUCTS = gql`
       description
       discount
       _id
-      hasSold
+      hasSold {
+        date
+        quantity
+        userId
+      }
       images
       price
       ratings {
@@ -37,16 +43,25 @@ const QUERY_USER_PRODUCTS = gql`
     }
   }
 `;
-
+const QUERY_PRODUCT_COUNT_OF_USERS = gql`
+  query findCountProducts($input: ProductCountInput!) {
+    countProducts(productCountInput: $input)
+  }
+`;
 type props = {
   user: User;
   products: Product[];
+  productsCount: number;
 };
 export default function UserProfilePage(props: props) {
-  console.log(props.user);
+  console.log(props);
   return (
     <Layout>
-      <UserPage user={props.user} products={props.products} />
+      <UserPage
+        user={props.user}
+        products={props.products}
+        productsCount={props.productsCount}
+      />
     </Layout>
   );
 }
@@ -63,11 +78,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       query: QUERY_USER_PRODUCTS,
       variables: { input: userId },
     });
+    const productsCountOfUser = await client.query({
+      query: QUERY_PRODUCT_COUNT_OF_USERS,
+      variables: {
+        input: {
+          userId: userId,
+        },
+      },
+    });
     props = {
       user: user.data.userFindById,
       products: productsOfUser.data.productsOfUser,
+      productsCount: productsCountOfUser.data.countProducts,
     };
   } catch (error) {
+    console.log(error);
     props = {
       notFound: true,
     };

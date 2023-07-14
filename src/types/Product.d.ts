@@ -12,5 +12,9 @@ export type Product = {
   stock: number;
   discount: number;
   ratings: Rating[];
-  hasSold: number;
+  hasSold: {
+    quantity: number;
+    userId: string;
+    date: Date;
+  };
 };

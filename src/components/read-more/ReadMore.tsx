@@ -2,7 +2,7 @@ import { FormEvent, PropsWithChildren, useEffect, useState } from "react";
 import { SystemUI } from "../UI/SystemUI";
 import Image from "next/image";
 import { Button } from "../UI/Button";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { ApolloError, gql, useMutation, useQuery } from "@apollo/client";
 import { LoadingSpinner } from "../UI/Loading";
 import { Product } from "@/types/Product";
 import { useAppDispatch, useAppSelector } from "@/store";
@@ -69,24 +69,34 @@ export const ReadMore: React.FC<props> = (props) => {
       product &&
       product.userId.toString() !== auth.userId.toString()
     ) {
-      const result = await addToCartFn({
-        variables: {
-          input: { productId: product._id, quantity },
-        },
-        context: {
-          headers: {
-            authorization: `bearer ${auth.token}`,
+      try {
+        const result = await addToCartFn({
+          variables: {
+            input: { productId: product._id, quantity },
           },
-        },
-      });
-      if (result.data) {
-        console.log("Light Notification changed");
-        dispatch(
-          lightNotificationActions.createNotification({
-            status: "success",
-            title: "Added successfully",
-          })
-        );
+          context: {
+            headers: {
+              authorization: `bearer ${auth.token}`,
+            },
+          },
+        });
+        if (result.data) {
+          console.log("Light Notification changed");
+          dispatch(
+            lightNotificationActions.createNotification({
+              status: "success",
+              title: "Added successfully",
+            })
+          );
+        }
+      } catch (error) {
+        if (error instanceof ApolloError)
+          dispatch(
+            lightNotificationActions.createNotification({
+              status: "error",
+              title: error.message,
+            })
+          );
       }
     } else {
       dispatch(
@@ -114,12 +124,6 @@ export const ReadMore: React.FC<props> = (props) => {
   }
   let pageContent = <LoadingSpinner />;
   if (product) {
-    let formattedPrice = moneyFormatterVn.format(
-      product.discount > 0
-        ? product.price - +product.price * (+product.discount / 100)
-        : product.price
-    );
-    console.log(formattedPrice);
     pageContent = (
       <BackgroundContainer className="gap-5">
         <div className="w-full aspect-square relative xl:col-span-6 col-span-12">
@@ -180,7 +184,7 @@ export const ReadMore: React.FC<props> = (props) => {
             </div>
             <span className="text-gray-500/80">|</span>
             <div>
-              <span>{props.product.hasSold}</span>
+              <span>{props.product.hasSold.quantity || 0}</span>
               &nbsp;
               <span>Buys</span>
             </div>
@@ -193,8 +197,8 @@ export const ReadMore: React.FC<props> = (props) => {
                   {product.price}
                 </p>
                 <p className="text-3xl text-[#ee4d2d]">
-                  {/* <span className="text-sm">$</span> */}
-                  {formattedPrice}
+                  <span className="text-sm">$</span>
+                  {product.price - (product.price * +product.discount) / 100}
                 </p>
                 <p className="bg-[#ee4d2d] text-white px-4 py-2">
                   {+product.discount}% off
@@ -203,7 +207,7 @@ export const ReadMore: React.FC<props> = (props) => {
             ) : (
               <p className="text-3xl text-[#ee4d2d]">
                 {/* <span className="text-sm">$</span> */}
-                {formattedPrice}
+                {product.price}
               </p>
             )}
           </div>

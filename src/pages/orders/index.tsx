@@ -10,10 +10,10 @@ const QUERY_ORDERS = gql`
     orders {
       _id
       userId
+      date
       products {
         description
         discount
-
         images
         price
         quantity
