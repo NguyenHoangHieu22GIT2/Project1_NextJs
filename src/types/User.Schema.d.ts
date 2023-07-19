@@ -5,4 +5,5 @@ export interface User {
   avatar: string;
   cart: { items: [{ productId: string; quantity: number }] };
   isOnline: boolean;
+  reputation: number;
 }

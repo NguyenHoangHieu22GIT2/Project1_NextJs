@@ -16,7 +16,7 @@ import { notificationActions } from "@/store/notification";
 import { useDropzone } from "react-dropzone";
 import { toBase64 } from "@/utils/toBase64";
 import Image from "next/image";
-
+import { motion } from "framer-motion";
 const MUTATION_CREATE_USER = gql`
   mutation register($input: CreateUserInput!) {
     register(createUserInput: $input) {
@@ -68,7 +68,7 @@ export const Register: React.FC<props> = (props) => {
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (formValid && file) {  
+    if (formValid && file) {
       const result = await createUser({
         variables: {
           input: {
@@ -115,17 +115,28 @@ export const Register: React.FC<props> = (props) => {
   }
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   return (
-    <form onSubmit={submit} method="post" className="[&>*]:mb-10 gap-10">
+    <motion.form
+      initial={{ x: 1000 }}
+      animate={{ x: -200, display: "hidden" }}
+      exit={{ x: 1000 }}
+      onSubmit={submit}
+      method="post"
+      // style={{ transform:  }}
+      className="[&>*]:mb-10 absolute left-1/2 bg-white p-5 rounded-lg shadow-xl mx-auto w-[min(30vw,800px)]"
+    >
+      <h1 className="text-3xl font-bold text-center uppercase">Register</h1>
       <Input label="Email" type="email" input={emailInput} />
       <Input label="Username" type="text" input={usernameInput} />
       <div {...getRootProps()} className="border-b-2 border-b-[#43cea6] py-3">
         <input {...getInputProps()} />
         {isDragActive ? (
-          <p>Drop the files here ...</p>
+          <p className="text-sm">Drop the files here ...</p>
         ) : (
-          <p>Drag 'n' drop some files here, or click to select files</p>
+          <p className="text-sm">
+            Drag 'n' drop some files here, or click to select files
+          </p>
         )}
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex flex-wrap gap-2">
           {file && (
             <div className="relative">
               <Image
@@ -135,7 +146,7 @@ export const Register: React.FC<props> = (props) => {
                 height={200}
               />
               <span
-                className="absolute top-0 right-0 bg-slate-500 px-3 py-1 cursor-pointer rounded-full"
+                className="absolute top-0 right-0 px-3 py-1 rounded-full cursor-pointer bg-slate-500"
                 onClick={() => {
                   setFile(undefined);
                 }}
@@ -148,6 +159,6 @@ export const Register: React.FC<props> = (props) => {
       </div>
       <Input label="Password" type="password" input={passwordInput} />
       <Button>Register</Button>
-    </form>
+    </motion.form>
   );
 };

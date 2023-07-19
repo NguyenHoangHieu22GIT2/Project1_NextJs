@@ -8,6 +8,7 @@ import { authActions } from "@/store/auth";
 import { notificationActions } from "@/store/notification";
 import Link from "next/link";
 import { client } from "@/pages/_app";
+import { motion } from "framer-motion";
 
 const QUERY_LOGIN_USER = gql`
   query login($input: LoginUserInput!) {
@@ -100,16 +101,26 @@ export const Login: React.FC<props> = (props) => {
     }
   }
   return (
-    <form onSubmit={submit} method="post" className="[&>*]:mb-10  ">
+    <motion.form
+      initial={{ x: -1000 }}
+      animate={{ x: -200, display: "hidden" }}
+      exit={{ x: -1200 }}
+      onSubmit={submit}
+      method="post"
+      className="[&>*]:mb-10 left-1/2 bg-white p-5 rounded-lg shadow-xl mx-auto w-[min(30vw,800px)] absolute"
+    >
+      <h1 className="text-3xl font-bold text-center uppercase">Login</h1>
       <Input label="Email" type="text" input={emailInput} />
       <Input label="Password" type="password" input={passwordInput} />
-      <Link
-        href="auth/forgot-password"
-        className=" w-fit px-2 py-1  text-blue-800 font-bold rounded-lg"
-      >
-        Forgot Password?
-      </Link>
-      <Button classNames="px-10">Login</Button>
-    </form>
+      <div className="flex items-center justify-between">
+        <Button classNames="px-10">Login</Button>
+        <Link
+          href="auth/forgot-password"
+          className="px-2 py-1 text-sm font-bold text-gray-400 rounded-lg w-fit"
+        >
+          Forgot Password?
+        </Link>
+      </div>
+    </motion.form>
   );
 };

@@ -12,6 +12,7 @@ const QUERY_USER_PRODUCTS = gql`
       price
       description
       _id
+      discount
     }
   }
 `;
@@ -31,14 +32,12 @@ export default function UserProducts() {
     }
   }, [data]);
   return (
-    <div>
-      <Products
-        loading={loading}
-        data={products}
-        valueToFind=""
-        error={error}
-        isInUserPage={true}
-      />
-    </div>
+    <Products
+      loading={loading}
+      data={products}
+      valueToFind=""
+      error={error}
+      isInUserPage={true}
+    />
   );
 }

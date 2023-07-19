@@ -31,6 +31,7 @@ const QUERY_ALL_PRODUCTS = gql`
       images
       price
       userId
+      discount
     }
   }
 `;
@@ -99,6 +100,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     pageNumber = context.query.pageNumber ? +context.query.pageNumber : 1;
     search = context.query.search ? context.query.search.toString() : "";
   }
+  console.log(search);
   try {
     const { data: dataProducts, loading: loadProducts } = await client.query({
       query: QUERY_ALL_PRODUCTS,
@@ -106,13 +108,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         input: {
           limit: LIMIT,
           skip: SKIP * (pageNumber - 1),
+          words: search,
         },
       },
     });
     const products = dataProducts.products;
     const { data, loading } = await client.query({
       query: QUERY_PRODUCTS_COUNT,
-      variables: { input: {} },
+      variables: {
+        input: {
+          words: search,
+        },
+      },
     });
     const productCounts = data.countProducts;
     props = {

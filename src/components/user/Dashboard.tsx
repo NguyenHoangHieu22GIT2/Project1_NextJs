@@ -5,6 +5,7 @@ import { CategoryScale } from "chart.js/auto";
 import SecondaryButton from "../UI/SecondaryButton";
 import { gql, useQuery } from "@apollo/client";
 import { useAppSelector } from "@/store";
+import { User } from "@/types/User.Schema";
 
 ChartJS.register(CategoryScale);
 
@@ -14,7 +15,11 @@ const QUERY_SOLD_DATE = gql`
   }
 `;
 
-export default function Dashboard() {
+type props = {
+  user: User;
+};
+
+export default function Dashboard(props: props) {
   const [dateString, setDateString] = useState("year");
   const auth = useAppSelector((state) => state.auth);
   const [dateYears, setDateYears] = useState([]);
@@ -30,7 +35,6 @@ export default function Dashboard() {
   useEffect(() => {
     if (data) {
       const decryptedData = JSON.parse(data.getSoldDate);
-      console.log(decryptedData);
       setDateDays(decryptedData.dateDays);
       setDateMonths(decryptedData.dateMonths);
       setDateYears(decryptedData.dateYears);
@@ -55,7 +59,18 @@ export default function Dashboard() {
   return (
     <div className="">
       <div>
-        <h1>Total Sales:</h1>
+        <div>
+          <h1 className="font-bold">Reputation:</h1>
+          <div
+            className="w-[100px] h-[100px] rounded-full "
+            role="progressbar"
+            aria-valuenow={75}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          ></div>
+        </div>
+      </div>
+      <div>
         <div className="flex gap-3">
           <SecondaryButton onClick={changeDateFormat.bind(null, 0)}>
             Years

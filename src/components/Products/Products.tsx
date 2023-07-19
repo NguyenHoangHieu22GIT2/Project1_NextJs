@@ -53,6 +53,7 @@ export function Products({
             images={product.images}
             isInUserPage={isInUserPage}
             changeProducts={changeProducts}
+            discount={product.discount}
           />
         );
       })}

@@ -26,7 +26,7 @@ export function UserPage({ user, products, productsCount }: props) {
   if (data && data === typePage.products) {
     dataPage = <UserProducts />;
   } else if (data === typePage.Dashboard) {
-    dataPage = <Dashboard />;
+    dataPage = <Dashboard user={user} />;
   } else {
     dataPage = <Profile />;
   }
@@ -34,6 +34,7 @@ export function UserPage({ user, products, productsCount }: props) {
   function changeDataPage(typePageArg: string) {
     setData(typePageArg);
   }
+  console.log(user);
   return (
     <section className="my-10 flex gap-5 ">
       <UserNavAndInfo

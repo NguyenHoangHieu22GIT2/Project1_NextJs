@@ -8,6 +8,7 @@ import { NotificationCard } from "../UI/NotificationCard";
 import { SystemUI } from "../UI/SystemUI";
 import { Login } from "./Login";
 import { Register } from "./Register";
+import { AnimatePresence } from "framer-motion";
 
 const QUERY_TOKEN_NEW_USER = gql`
   query verifyToken($input: LoginVerifyToken!) {
@@ -97,7 +98,7 @@ export function Auth(props: props) {
             </form>
           )}
         </NotificationCard>
-        <div className="col-span-12 bg-slate-400 py-5 px-2 rounded-lg grid grid-cols-12 gap-2">
+        <div className="grid grid-cols-12 col-span-12 gap-2 px-2 py-5 rounded-lg bg-slate-400">
           <button
             onClick={chooseLogin}
             className={`${
@@ -115,59 +116,14 @@ export function Auth(props: props) {
             Register
           </button>
         </div>
-        <div className="col-span-12 pt-5 grid grid-cols-12">
-          <div className="xl:col-span-6 text-gray-800 font-bold col-span-12  ">
-            {isLogin ? (
-              <>
-                <h1 className="text-heading ">Rules</h1>
-                <ol className="list-decimal ">
-                  <li>
-                    <p>You have to register first to login!</p>
-                  </li>
-                  <li>
-                    <p>
-                      The password has to match with the password that you have
-                      registered
-                    </p>
-                  </li>
-                  <li>
-                    <p>Try not to DDOS us, thank you :D</p>
-                  </li>
-                </ol>
-              </>
-            ) : (
-              <>
-                <h1 className="text-heading ">Rules</h1>
-                <ol className="list-decimal">
-                  <li>
-                    <p>
-                      Email should contain <code>@</code> Of course!
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      The password should have at least 1 lowercase, 1
-                      uppercase, 1 symbol and 1 number, also it should be at
-                      least 5 characters long
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      A username for a cool guy like you is neccessary as well
-                      :D
-                    </p>
-                  </li>
-                </ol>
-              </>
-            )}
-          </div>
-          <div className="xl:col-span-6  pt-10 col-span-12">
-            {isLogin ? (
-              <Login onHaveToken={doesHaveToken} />
-            ) : (
-              <Register salt={props.salt} />
-            )}
-          </div>
+        <div className="col-span-12 pt-10">
+          <AnimatePresence mode="wait">
+            {isLogin && <Login onHaveToken={doesHaveToken} />}
+          </AnimatePresence>
+
+          <AnimatePresence mode="wait">
+            {!isLogin && <Register salt={props.salt} />}
+          </AnimatePresence>
         </div>
       </SystemUI>
     </section>

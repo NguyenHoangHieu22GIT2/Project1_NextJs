@@ -59,10 +59,10 @@ export function ForgotPassword() {
     <section className="my-5">
       <NotificationCard buttonContent="Okay" onClickFunction={turnOff} />
       <SystemUI>
-        <h1 className="col-span-12 text-white xl:text-center mb-10 text-subHeading font-bold">
+        <h1 className="col-span-12 mb-10 font-bold text-white xl:text-center text-subHeading">
           Forget password ? Restore again!
         </h1>
-        <div className="col-span-12 grid grid-cols-12">
+        <div className="grid grid-cols-12 col-span-12">
           <form
             onSubmit={submit}
             className="xl:col-span-6 col-span-12 [&>*]:mb-5"

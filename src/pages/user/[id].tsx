@@ -17,6 +17,7 @@ const QUERY_ONE_USER = gql`
       email
       isOnline
       username
+      reputation
     }
   }
 `;
