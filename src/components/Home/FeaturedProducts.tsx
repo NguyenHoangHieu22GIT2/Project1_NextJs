@@ -33,7 +33,7 @@ export function FeaturedProducts({ products, loading }: props) {
         Featured Products
       </h1>
       <SystemUI>
-        <div className=" col-span-12 my-16 grid gap-3 xl:justify-center grid-cols-12">
+        <div className=" col-span-12 my-16 grid gap-3 sm:justify-center grid-cols-12">
           {loading ? <LoadingSpinner /> : allProductsElements}
         </div>
       </SystemUI>

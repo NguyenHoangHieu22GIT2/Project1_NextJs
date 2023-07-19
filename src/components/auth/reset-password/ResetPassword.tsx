@@ -67,14 +67,14 @@ export function ResetPassword() {
     <section className="my-5">
       <NotificationCard buttonContent="Okay!" onClickFunction={turnOff} />
       <SystemUI>
-        <h1 className="col-span-12 text-white xl:text-center mb-10 text-subHeading font-bold">
+        <h1 className="col-span-12 text-white sm:text-center mb-10 text-subHeading font-bold">
           Reset password Time!
         </h1>
         <div className="col-span-12 grid grid-cols-12">
           <form
             onSubmit={submit}
             action="post"
-            className="xl:col-span-6 col-span-12 [&>*]:mb-10"
+            className="sm:col-span-6 col-span-12 [&>*]:mb-10"
           >
             <Input label="Password" type="password" input={passwordInput} />
             <Input label="Token" type="text" input={tokenInput} />

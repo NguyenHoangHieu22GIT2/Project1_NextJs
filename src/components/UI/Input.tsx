@@ -30,7 +30,7 @@ export function Input({ input, label, type }: props) {
         className={`absolute ${labelclassNameInvalid}  left-0 -top-2  transition font-bold text-attention origin-top-left hover:-translate-y-7 hover:text-primary/80 hover:scale-75 
          ${
            input.value.toString().length > 0
-             ? "-translate-y-7 text-primary xl:block scale-75 "
+             ? "-translate-y-7 text-primary sm:block scale-75 "
              : "peer-hover:-translate-y-7  peer-hover:text-primary/80 peer-hover:scale-75  "
          } `}
       >

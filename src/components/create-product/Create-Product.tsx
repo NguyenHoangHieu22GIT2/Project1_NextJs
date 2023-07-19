@@ -158,17 +158,7 @@ export function CreateProduct(props: props) {
             "Content-Type": "application/json",
           },
         });
-        // const formData = new FormData();
-        // for (let i = 0; i < files.length; i++) {
-        //   formData.append(`file${i}}`, files[i]);
-        // }
-        // await fetch("http://localhost:4000/uploadFile", {
-        //   method: "POST",
-        //   body: formData,
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        // });
+
         dispatch(
           notificationActions.createNotification({
             status: "success",
@@ -209,8 +199,8 @@ export function CreateProduct(props: props) {
         }}
       ></NotificationCard>
       <SystemUI>
-        <div className="col-span-12  text-gray-800 bg-white px-5 py-3 rounded-lg shadow-lg ">
-          <h1 className="text-center uppercase border-b-2 border-dotted border-b-blue-300 font-bold text-subHeading col-span-12">
+        <div className="col-span-12 px-5 py-3 text-gray-800 bg-white rounded-lg shadow-lg ">
+          <h1 className="col-span-12 font-bold text-center uppercase border-b-2 border-dotted border-b-blue-300 text-subHeading">
             Create Product
           </h1>
           <div className="flex mt-10 [&>*]:basis-1/2 gap-5">
@@ -234,7 +224,7 @@ export function CreateProduct(props: props) {
                   <p>Drag 'n' drop some files here, or click to select files</p>
                 )}
               </div>
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex flex-wrap gap-2">
                 {files.length > 0 &&
                   files.map((image, index) => {
                     return (
@@ -246,7 +236,7 @@ export function CreateProduct(props: props) {
                           height={200}
                         />
                         <span
-                          className="absolute top-0 right-0 bg-slate-500 px-3 py-1 cursor-pointer rounded-full"
+                          className="absolute top-0 right-0 px-3 py-1 rounded-full cursor-pointer bg-slate-500"
                           onClick={() => {
                             setFiles((prevArray) => {
                               return prevArray.filter(

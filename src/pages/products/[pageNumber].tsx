@@ -63,7 +63,7 @@ const ProductIndexPage: React.FC<props> = ({
       </Head>
       <Finder pageNumber={pageNumber} />
       <Filter />
-      <section className="py-5 xl:py-12">
+      <section className="py-5 sm:py-12">
         <SystemUI>
           <Suspense fallback={<LoadingPageNumber />}>
             <BackgroundContainer>

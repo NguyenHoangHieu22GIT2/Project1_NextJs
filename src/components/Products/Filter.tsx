@@ -58,7 +58,7 @@ export function Filter(props: PropsWithChildren) {
     <section className="text-gray-700">
       <SystemUI>
         <BackgroundContainer>
-          <h1 className="text-attention font-bold relative col-span-3 xl:col-span-2 text-center   before:content-[''] before:w-full before:h-1 before:bg-slate-200 before:absolute before:bottom-0 before:left-0">
+          <h1 className="text-attention font-bold relative col-span-3 sm:col-span-2 text-center   before:content-[''] before:w-full before:h-1 before:bg-slate-200 before:absolute before:bottom-0 before:left-0">
             Filters
           </h1>
           {/* <div className="col-span-12 grid">

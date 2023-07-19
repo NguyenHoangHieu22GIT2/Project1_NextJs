@@ -155,7 +155,7 @@ function Header() {
       <SystemUI>
         <div className="flex gap-5 [&>*]:py-3 w-full col-span-12 items-center justify-between">
           <h1
-            className={` whitespace-nowrap text-2xl xl:text-3xl font-bold ${outfit.className} `}
+            className={` whitespace-nowrap text-2xl sm:text-3xl font-bold ${outfit.className} `}
           >
             K-rose
           </h1>
@@ -419,7 +419,7 @@ function Header() {
             </AnimatePresence>
           </div>
 
-          {/* <nav className=" hidden xl:flex xl:gap-5 justify-center items-center  ">
+          {/* <nav className=" hidden sm:flex sm:gap-5 justify-center items-center  ">
             <ul
               className={`${montserrat.className} flex gap-9 [&>li]:py-5  text-gray-900 text-lg font-bold justify-between`}
             >

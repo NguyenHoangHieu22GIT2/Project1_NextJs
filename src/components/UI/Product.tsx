@@ -60,10 +60,10 @@ export function Product(props: props) {
   }, [auth]);
   const [removeProductGraphqlFn] = useMutation(MUTATION_DELETE_PRODUCT);
   return (
-    <div className="xl:col-span-4 shadow-2xl flex flex-col justify-between col-span-12 text-gray-900 bg-gray-200 relative  rounded-md">
+    <div className="sm:col-span-4 shadow-2xl flex flex-col justify-between col-span-12 text-gray-900 bg-gray-200 relative  rounded-md">
       <Link
         href={`/products/product/${props._id}`}
-        className="w-full aspect-square relative overflow-hidden xl:col-span-6 col-span-12"
+        className="w-full aspect-square relative overflow-hidden sm:col-span-6 col-span-12"
       >
         <Image
           className="hover:scale-125  transition"

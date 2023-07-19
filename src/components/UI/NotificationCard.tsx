@@ -33,7 +33,7 @@ export function NotificationCard({
           onClick={onClickFunction.bind(null, notificationState.status)}
         >
           <Card class="bg-white" status={notificationState.status}>
-            <h1 className="xl:text-4xl text-center font-bold text-2xl text-primary">
+            <h1 className="sm:text-4xl text-center font-bold text-2xl text-primary">
               {notificationState.title}
             </h1>
             <p className="text-2xl">{notificationState.description}</p>

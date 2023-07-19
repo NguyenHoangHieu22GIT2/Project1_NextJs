@@ -8,19 +8,19 @@ export function Footer() {
   return (
     <footer className="bg-[#252F47] py-5 w-full">
       <SystemUI>
-        <div className="xl:col-span-5 col-span-12 text-white">
+        <div className="sm:col-span-5 col-span-12 text-white">
           <h1 className="text-heading">K-rose</h1>
-          <ul className="text-[#D4C4C4]/60 flex flex-col xl:gap-2">
+          <ul className="text-[#D4C4C4]/60 flex flex-col sm:gap-2">
             <li>+0917077967</li>
             <li>+hoanghieufro@gmail.com</li>
             <li>+Laws by Vietnam</li>
           </ul>
         </div>
         <div className="col-span-7">
-          <h1 className="text-white text-attention xl:text-heading ">
+          <h1 className="text-white text-attention sm:text-heading ">
             Trusted By:
           </h1>
-          <ul className="flex xl:gap-5">
+          <ul className="flex sm:gap-5">
             <li>
               <Image src={ross} alt="brang1" />
             </li>

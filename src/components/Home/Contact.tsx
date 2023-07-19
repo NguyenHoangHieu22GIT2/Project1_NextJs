@@ -23,7 +23,7 @@ export function Contact() {
   return (
     <section id="contact" className="text-gray-700 my-5">
       <SystemUI>
-        <div className="xl:col-span-6 col-span-12">
+        <div className="sm:col-span-6 col-span-12">
           <h1 className="text-heading font-bold before:content-[''] before:w-2 before:h-full before:bg-primary before:top-0 before:-left-5 before:absolute relative">
             Contact Us
           </h1>
@@ -36,7 +36,7 @@ export function Contact() {
         <form
           method="post"
           onSubmit={submit}
-          className="xl:col-span-6 col-span-12 grid [&>*]:my-5 xl:gap-10"
+          className="sm:col-span-6 col-span-12 grid [&>*]:my-5 sm:gap-10"
         >
           <Input label="Email" type="email" input={emailInput} />
           <Input label="Name" type="text" input={nameInput} />

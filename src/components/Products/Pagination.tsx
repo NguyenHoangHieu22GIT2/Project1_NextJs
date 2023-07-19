@@ -75,7 +75,7 @@ export const Pagination: React.FC<props> = (props) => {
   );
 
   let nextPageButton = props.nextPage > 0 && (
-    <li className="border-4 xl:block hidden border-primary  ">
+    <li className="border-4 sm:block hidden border-primary  ">
       <Link
         href={`/products/${props.nextPage}`}
         className="inline-block px-4 hover:bg-primary transition"
@@ -85,7 +85,7 @@ export const Pagination: React.FC<props> = (props) => {
     </li>
   );
   let previousPageButton = props.previousPage > 0 && (
-    <li className="border-4 xl:block hidden border-primary  ">
+    <li className="border-4 sm:block hidden border-primary  ">
       <Link
         href={`/products/${props.previousPage}`}
         className="inline-block px-4 hover:bg-primary transition"
@@ -97,7 +97,7 @@ export const Pagination: React.FC<props> = (props) => {
   return (
     <nav className="my-4 text-gray-700">
       <SystemUI>
-        <ul className="flex justify-center col-span-12 xl:gap-5 gap-1 text-sm xl:text-2xl ">
+        <ul className="flex justify-center col-span-12 sm:gap-5 gap-1 text-sm sm:text-2xl ">
           {previousPageButton}
           {firstPage}
           {previousPage}

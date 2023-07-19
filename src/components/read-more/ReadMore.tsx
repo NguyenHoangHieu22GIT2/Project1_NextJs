@@ -126,7 +126,7 @@ export const ReadMore: React.FC<props> = (props) => {
   if (product) {
     pageContent = (
       <BackgroundContainer className="gap-5">
-        <div className="w-full aspect-square relative xl:col-span-6 col-span-12">
+        <div className="w-full aspect-square relative sm:col-span-6 col-span-12">
           <Image
             sizes="80vw"
             width={10000}
@@ -161,8 +161,8 @@ export const ReadMore: React.FC<props> = (props) => {
             })}
           </div>
         </div>
-        <div className="col-span-12 xl:col-span-6 lex flex-col justify-between">
-          <h1 className=" font-bold text-xl xl:text-2xl">{product.title}</h1>
+        <div className="col-span-12 sm:col-span-6 lex flex-col justify-between">
+          <h1 className=" font-bold text-xl sm:text-2xl">{product.title}</h1>
           <div className="flex gap-2">
             <div>
               <h6 className="text-[#ee4d2d] inline-block relative before:content-[''] before:w-full before:h-[1px] before:bg-[#ee4d2d] before:absolute before:bottom-0 before:left-0">

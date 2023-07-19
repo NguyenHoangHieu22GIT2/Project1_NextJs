@@ -13,7 +13,7 @@ export function Button(props: props) {
       className={`
     bg-primary  shadow-2xl ${
       props.classNames ? props.classNames : ""
-    } text-black capitalize font-bold xl:px-12 px-2  rounded-lg py-2 xl:text-attention  transition  
+    } text-black capitalize font-bold sm:px-12 px-2  rounded-lg py-2 sm:text-attention  transition  
     `}
     >
       {props.children}
