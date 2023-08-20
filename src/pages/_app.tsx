@@ -31,7 +31,7 @@ if (typeof window !== "undefined") {
 }
 export { socket };
 export const client = new ApolloClient({
-  link: createUploadLink({ uri: process.env.NEXT_PUBLIC_SERVER_URI }),
+  link: createUploadLink({ uri: process.env.NEXT_PUBLIC_SERVER_URI + "/graphql" }),
   cache: new InMemoryCache(),
 });
 
