@@ -16,7 +16,6 @@ export default function CreateProductPage(props: props) {
   const router = useRouter();
   const token = useToken();
   const isAuth = useCheckAuth();
-
   useEffect(() => {
     if (typeof window !== undefined && isAuth != undefined) {
       !isAuth && router.push("/auth");

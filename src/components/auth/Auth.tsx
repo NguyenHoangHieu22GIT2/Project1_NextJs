@@ -73,7 +73,7 @@ export function Auth(props: props) {
     setMessage(token);
   }
   return (
-    <section className="py-5">
+    <section className="py-5 overflow-hidden">
       <SystemUI>
         <NotificationCard
           buttonContent="Go Back"

@@ -17,6 +17,7 @@ type props = {
 export function FeaturedProducts({ products, loading }: props) {
   const allProductsElements = products?.map((product) => (
     <Product
+      discount={product.discount}
       key={product._id}
       _id={product._id}
       title={product.title}

@@ -13,6 +13,7 @@ import { moneyFormatterVn } from "@/utils/moneyFormatterVn";
 import { Minus } from "../UI/SVG/Minus";
 import { Plus } from "../UI/SVG/Plus";
 import { BackgroundContainer } from "../UI/BackgroundContainer";
+import { Option } from "@/types/Option";
 
 type props = {
   product: Product;
@@ -49,6 +50,9 @@ export const ReadMore: React.FC<props> = (props) => {
 
   const [imageTargeted, setImageTargeted] = useState<number>(0);
   const [product, setProduct] = useState<Product>();
+  const [chosenOption, setChosenOption] = useState<Option>(
+    props.product.options[0]
+  );
   const [quantity, setQuantity] = useState(0);
   const [addToCartFn, { loading, data, error }] =
     useMutation(MUTATION_ADD_TO_CART);
@@ -207,23 +211,29 @@ export const ReadMore: React.FC<props> = (props) => {
             ) : (
               <p className="text-3xl text-[#ee4d2d]">
                 {/* <span className="text-sm">$</span> */}
-                {product.price}
+                {chosenOption?.price | product.price}
               </p>
             )}
           </div>
-          {/* <div className="flex gap-10 my-5 items-center">
-            <h1>Màu Sắc</h1>
+          <div className="flex gap-10 my-5 items-center">
+            <h1>Options</h1>
             <div>
               <ul className="flex gap-5 text-sm">
-                <li>
-                  <button className="border-2 px-5 py-2">Sóc Ghi</button>
-                </li>
-                <li>
-                  <button className="border-2 px-5 py-2">Sóc Ghi</button>
-                </li>
+                {props.product.options.map((option) => {
+                  return (
+                    <li>
+                      <button
+                        onClick={() => setChosenOption(option)}
+                        className="border-2 px-5 py-2"
+                      >
+                        {option.optionName}
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
-          </div> */}
+          </div>
           <p className="col-span-12 text-gray-700">{product.description}</p>
           <form onSubmit={submit} className="py-5 ">
             <label

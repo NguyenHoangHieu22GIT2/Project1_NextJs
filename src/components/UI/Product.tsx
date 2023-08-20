@@ -17,7 +17,7 @@ type props = {
   images: string[];
   userImage?: StaticImageData;
   isInUserPage?: boolean;
-  changeProducts: (id: string) => void;
+  changeProducts?: (id: string) => void;
   discount: number;
 };
 

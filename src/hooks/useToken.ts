@@ -18,12 +18,14 @@ export function useToken() {
     variables: { input: authStore.userId },
   });
   useEffect(() => {
-    setCount(count + 1);
+    console.log(authStore.userId && typeof window !== undefined && count == 0);
     if (authStore.userId && typeof window !== undefined && count == 0) {
       createTokenFn().then((result) => {
+        console.log(result.data.createCsrfToken.token);
         setToken(result.data.createCsrfToken.token);
       });
     }
+    setCount(count + 1);
   }, []);
   return token;
 }

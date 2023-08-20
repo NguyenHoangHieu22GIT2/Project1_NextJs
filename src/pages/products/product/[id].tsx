@@ -21,6 +21,10 @@ const QUERY_ONE_PRODUCT = gql`
       images
       discount
       stock
+      options {
+        optionName
+        price
+      }
       hasSold {
         date
         quantity

@@ -17,6 +17,10 @@ module.exports = {
         backgroundColor: "#7A7E87",
         secondary: "#C9CCCF",
         buttonOutLineRed: "#EB8882",
+        accent: {
+          500: "#56A47E",
+          800: "#1e6d3f",
+        },
       },
       fontSize: {
         heading: "3rem",

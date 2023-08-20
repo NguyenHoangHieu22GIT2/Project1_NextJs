@@ -1,67 +1,70 @@
 import React, { useState } from "react";
 
-interface Option {
-  name: string;
-  price: number;
-}
+const ProductOptions = () => {
+  const [options, setOptions] = useState<{ name: string; price: number }[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
-interface Options {
-  [optionType: string]: Option[];
-}
-
-interface Customizations {
-  [optionType: string]: string;
-}
-
-interface ProductCustomizerProps {
-  options: Options;
-}
-
-const ProductCustomizer: React.FC<ProductCustomizerProps> = ({ options }) => {
-  const [customizations, setCustomizations] = useState<Customizations>({});
-  const [totalPrice, setTotalPrice] = useState(0);
-
-  // Handle option selection
-  const handleOptionSelect = (optionType: string, optionIndex: number) => {
-    const selectedOption = options[optionType][optionIndex];
-    setCustomizations((prevCustomizations) => ({
-      ...prevCustomizations,
-      [optionType]: selectedOption.name,
-    }));
-    setTotalPrice((prevTotalPrice) => prevTotalPrice + selectedOption.price);
+  // Function to add an option
+  const addOption = () => {
+    setOptions([...options, { name: "", price: 0 }]);
   };
 
-  // Render option select dropdown
-  const renderOptionSelect = (optionType: string) => (
-    <select
-      value={customizations[optionType] || ""}
-      onChange={(event) =>
-        handleOptionSelect(optionType, parseInt(event.target.value, 10))
-      }
-    >
-      <option value="">Select {optionType}</option>
-      {options[optionType].map((option, index) => (
-        <option key={index} value={index}>
-          {option.name} (+${option.price})
-        </option>
-      ))}
-    </select>
-  );
+  // Function to handle option change
+  const handleOptionChange = (index: any, event: any) => {
+    const updatedOptions = [...options];
+    // @ts-ignore
+    updatedOptions[index][event.target.name] = event.target.value;
+    setOptions(updatedOptions);
+  };
+
+  // Function to handle option selection
+  const handleOptionSelect = (index: any, event: any) => {
+    const optionValue = event.target.value;
+    setSelectedOptions((prevOptions) => {
+      const updatedOptions = [...prevOptions];
+      // @ts-ignore
+      updatedOptions[index] = optionValue;
+      return updatedOptions;
+    });
+  };
+
+  // Calculate total price based on selected options
+  const calculateTotalPrice = () => {
+    let totalPrice = 0;
+    selectedOptions.forEach((optionIndex) => {
+      const option = options[optionIndex];
+      totalPrice += option.price;
+    });
+    return totalPrice;
+  };
 
   return (
     <div>
-      <h2>Product Customizer</h2>
-      {Object.keys(options).map((optionType) => (
-        <div key={optionType}>
-          <h3>{optionType}:</h3>
-          {renderOptionSelect(optionType)}
+      <h2>Product Options</h2>
+      {options.map((option, index) => (
+        <div key={index}>
+          <input
+            type="text"
+            name="name"
+            value={option.name}
+            onChange={(event) => handleOptionChange(index, event)}
+            placeholder="Option Name"
+          />
+          <input
+            type="number"
+            name="price"
+            value={option.price}
+            onChange={(event) => handleOptionChange(index, event)}
+            placeholder="Option Price"
+          />
         </div>
       ))}
+      <button onClick={addOption}>Add Option</button>
       <div>
-        <h3>Total Price: ${totalPrice}</h3>
+        <h3>Total Price: {calculateTotalPrice()}</h3>
       </div>
     </div>
   );
 };
 
-export default ProductCustomizer;
+export default ProductOptions;

@@ -4,7 +4,13 @@ import { SystemUI } from "../UI/SystemUI";
 import { Button } from "../UI/Button";
 import { TextArea } from "../UI/Textarea";
 import { gql, useLazyQuery, useMutation } from "@apollo/client";
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { notificationActions } from "@/store/notification";
 import { NotificationCard } from "../UI/NotificationCard";
@@ -15,6 +21,7 @@ import { toBase64 } from "@/utils/toBase64";
 import Image from "next/image";
 import axios from "axios";
 import Rule from "../UI/SVG/Rule";
+import { AccentButton } from "../UI/AccentButton";
 
 type props = {
   token: string;
@@ -29,6 +36,31 @@ const MUTATION_CREATE_PRODUCT = gql`
   }
 `;
 export function CreateProduct(props: props) {
+  const [options, setOptions] = useState<
+    { optionName: string; price: number }[]
+  >([]);
+  const addOption = () => {
+    setOptions([...options, { optionName: "", price: 0 }]);
+  };
+  const handleOptionChangeName = (
+    index: number,
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setOptions((oldOptions) => {
+      oldOptions[index].optionName = event.target.value;
+      return oldOptions;
+    });
+  };
+  const handleOptionChangePrice = (
+    index: number,
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setOptions((oldOptions) => {
+      oldOptions[index].price = +event.target.value;
+      return oldOptions;
+    });
+  };
+  // console.log(options);
   const router = useRouter();
   const [files, setFiles] = useState<File[]>([]);
   const onDrop = useCallback(
@@ -54,18 +86,7 @@ export function CreateProduct(props: props) {
   const dispatch = useAppDispatch();
   const [createProductFn, {}] = useMutation(MUTATION_CREATE_PRODUCT);
   const token = useAppSelector((state) => state.auth.token);
-  // const [tags, setTags] = useState<any[]>([]);
-  // const updateTagName = (index: number, newName: string) => {
-  //   const newTags = [...tags];
-  //   newTags[index].name = newName;
-  //   setTags(newTags);
-  // };
-  // const updateTagOptions = (index: number, newOptions: string[]) => {
-  //   const newTags = [...tags];
-  //   newTags[index].options = newOptions;
-  //   setTags(newTags);
-  // };
-  const [tagElement, setTagElement] = useState<number>(0);
+  console.log(token);
   const titleInput = useInput((data) => {
     return data.length > 10;
   });
@@ -85,6 +106,7 @@ export function CreateProduct(props: props) {
   let formIsValid =
     titleInput.isValid && descriptionInput.isValid && priceInput.isValid;
 
+  // console.log(props.token);
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     files?.forEach((file) => {
@@ -132,6 +154,7 @@ export function CreateProduct(props: props) {
             stock: +stockInput.value,
             discount: +discountInput.value,
             images: imagesName,
+            options,
           },
         },
         context: {
@@ -182,11 +205,6 @@ export function CreateProduct(props: props) {
   function turnOffNotificationCard() {
     dispatch(notificationActions.deleteNotification({}));
   }
-  // function createTagInput() {
-  //   setTagElement(tagElement + 1);
-  //   setTags((state) => [...state, { name: "", options: [] }]);
-  // }
-  // console.log(files);
   return (
     <section className="my-10 ">
       <NotificationCard
@@ -261,34 +279,40 @@ export function CreateProduct(props: props) {
                 type="text"
                 input={discountInput}
               />
-              {/* {tags.map((tag, index) => (
-              <section key={Math.random()}>
-                <input
-                  onChange={(e) => {
-                    updateTagName(index, e.target.value);
-                  }}
-                  value={tag.name}
-                  type="text"
-                  placeholder="Tag"
-                />
-                <input
-                  onChange={(e) => {
-                    const valueSplit = e.target.value.split(" ");
-                    const convertToOptions = valueSplit.filter(
-                      (letter) => letter !== " "
-                    );
-                    console.log(convertToOptions);
-                    updateTagOptions(index, convertToOptions);
-                  }}
-                  value={tag.options.toString().replaceAll(",", " ")}
-                  type="text"
-                  placeholder="options"
-                />
-              </section>
-            ))}
-            <button onClick={createTagInput}>Want to add some Tags ?</button> */}
+              {options.map((option, index) => (
+                <div key={index} className="flex gap-5">
+                  <input
+                    className="p-2 font-bold border rounded-sm outline-none"
+                    type="text"
+                    name="name"
+                    onChange={(event) => handleOptionChangeName(index, event)}
+                    placeholder="Option Name"
+                  />
+                  <div className="flex gap-3 p-2 font-bold border rounded-sm outline-none">
+                    <span>$</span>
+                    <input
+                      className="outline-none"
+                      type="number"
+                      name="price"
+                      onChange={(event) =>
+                        handleOptionChangePrice(index, event)
+                      }
+                      placeholder="Option Price"
+                    />
+                  </div>
+                </div>
+              ))}
+              {/* <AccentButton onClick={addOption}>Add Option</AccentButton> */}
+              <button
+                type="button"
+                onClick={addOption}
+                className="mr-5 text-lg font-bold text-[#9a3762]"
+              >
+                Add Options
+              </button>
               <Button>Create now</Button>
             </form>
+
             <div>
               <ul className="sticky top-28">
                 <li className="flex gap-3">

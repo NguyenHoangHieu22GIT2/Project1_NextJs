@@ -22,6 +22,7 @@ const QUERY_ALL_PRODUCTS = gql`
       images
       price
       userId
+      discount
     }
   }
 `;

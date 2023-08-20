@@ -61,8 +61,8 @@ const ProductIndexPage: React.FC<props> = ({
       <Head>
         <title>Products</title>
       </Head>
-      <Finder pageNumber={pageNumber} />
-      <Filter />
+      {/* <Finder pageNumber={pageNumber} /> */}
+      {/* <Filter /> */}
       <section className="py-5 sm:py-12">
         <SystemUI>
           <Suspense fallback={<LoadingPageNumber />}>
