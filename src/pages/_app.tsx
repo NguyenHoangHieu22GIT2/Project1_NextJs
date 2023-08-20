@@ -23,7 +23,7 @@ import { ChatBoxes } from "@/components/chat/ChatBoxes";
 let socket: Socket;
 
 if (typeof window !== "undefined") {
-  socket = io("https://backend-nguyenhoanghieu1.vercel.app/", {
+  socket = io(process.env.NEXT_PUBLIC_SERVER_URI!, {
     query: {
       userId: sessionStorage.getItem("userId"),
     },
