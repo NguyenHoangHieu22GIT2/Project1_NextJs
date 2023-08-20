@@ -69,15 +69,7 @@ export function ForgotPassword() {
             action=""
             method="post"
           >
-            <Input
-              label="Email"
-              type="email"
-              changeBlur={emailInput.changeBlur}
-              changeValue={emailInput.changeValue}
-              value={emailInput.value}
-              invalid={emailInput.invalid}
-              className="col-span-12"
-            />
+            <Input label="Email" type="email" input={emailInput} />
             <Button classNames=" col-span-12">Send Mail!</Button>
           </form>
         </div>

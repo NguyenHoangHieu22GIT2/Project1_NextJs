@@ -116,7 +116,7 @@ export function Product(props: props) {
                     },
                   },
                 }).then((result) => {
-                  if (result.data) {
+                  if (result.data && props.changeProducts) {
                     props.changeProducts(props._id);
                   }
                 });
